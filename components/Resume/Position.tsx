@@ -1,4 +1,4 @@
-import type { Position as PositionType } from 'prisma/generated/client';
+import type { Position as PositionType } from '../../prisma/generated/client';
 import { List, Space, Chip } from '@mantine/core';
 import { Point } from 'tabler-icons-react';
 import { useStyles } from './Resume.styles';
