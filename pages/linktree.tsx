@@ -7,8 +7,9 @@ import {
     FilePower,
 } from 'tabler-icons-react';
 import { Header } from '../components/Header/Header';
+import dynamic from 'next/dynamic';
 
-export default function Index() {
+const Linktree = () => {
     return (
         <>
             <Header withDescription={false} />
@@ -61,4 +62,8 @@ export default function Index() {
             </Button.Group>
         </>
     );
-}
+};
+
+export default dynamic(() => Promise.resolve(Linktree), {
+    ssr: false,
+});

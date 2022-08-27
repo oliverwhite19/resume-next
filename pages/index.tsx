@@ -5,6 +5,7 @@ import { useStyles } from '../styles/index.styles';
 import { EmploymentWithPositions } from '../types';
 import type { Education as EducationType } from '../prisma/generated/client';
 import { PrismaClient } from '../prisma/generated/client';
+import dynamic from 'next/dynamic';
 
 const Resume = ({
     employment,
@@ -43,4 +44,6 @@ export async function getStaticProps() {
     };
 }
 
-export default Resume;
+export default dynamic(() => Promise.resolve(Resume), {
+    ssr: false,
+});
