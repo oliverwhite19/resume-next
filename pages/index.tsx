@@ -4,6 +4,7 @@ import { WorkExperience } from '../components/WorkExperience/WorkExperience';
 import { useStyles } from '../styles/index.styles';
 import { EmploymentWithPositions } from '../types';
 import type { Education as EducationType } from '../prisma/generated/client';
+import { PrismaClient } from '../prisma/generated/client';
 
 const Resume = ({
     employment,
@@ -25,5 +26,21 @@ const Resume = ({
         </>
     );
 };
+
+export async function getStaticProps() {
+    const prisma = new PrismaClient();
+    const employmentData = await prisma.employment.findMany({
+        include: { positions: true },
+        orderBy: { index: 'asc' },
+    });
+    const educationData = await prisma.education.findMany();
+    return {
+        props: {
+            employment: employmentData,
+            education: educationData,
+        },
+        revalidate: 60,
+    };
+}
 
 export default Resume;
