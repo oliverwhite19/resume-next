@@ -3,7 +3,7 @@ import { P } from '../Text';
 import { useStyles } from './Resume.styles';
 import styled from '@emotion/styled';
 import { Position } from './Position';
-import type { Position as PositionType } from 'prisma/generated/client';
+import type { Position as PositionType } from '../../prisma/generated/client';
 
 const CenteredP = styled(P)`
     text-align: center;
