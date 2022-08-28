@@ -21,6 +21,7 @@ const Layout = styled('div')`
 
 const Root = ({ Component, pageProps }: AppProps) => {
     let darkTheme = false;
+
     useEffect(function onFirstMount() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
         darkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
