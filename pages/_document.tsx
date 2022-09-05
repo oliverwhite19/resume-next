@@ -26,7 +26,7 @@ export default class _Document extends Document {
                     <link rel="apple-touch-icon" href="/logo192.png" />
                     <title>Oliver White - Resume</title>
                     <link rel="stylesheet" href="/globals.css" />
-                    <Script id="them-loader" strategy="beforeInteractive">
+                    <Script id="theme-loader" strategy="beforeInteractive">
                         {`(function () {
                 function setTheme(newTheme) {
                     document.documentElement.setAttribute(

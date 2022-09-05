@@ -44,6 +44,7 @@ const Root = ({ Component, pageProps }: AppProps) => {
         >
             <MantineProvider
                 theme={{ ...{ colorScheme }, ...theme }}
+                withGlobalStyles
                 withNormalizeCSS
             >
                 <Layout>
