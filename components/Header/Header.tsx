@@ -1,6 +1,13 @@
 import { ThemeSwitch } from '../ThemeSwitch/themeSwitch';
 import { useStyles } from './Header.styles';
-import { Stack, Button, Avatar, Modal, useMantineTheme } from '@mantine/core';
+import {
+    Stack,
+    Button,
+    Avatar,
+    Modal,
+    useMantineTheme,
+    Paper,
+} from '@mantine/core';
 import { H1, P } from '../Text';
 import { useState } from 'react';
 import { ContactModal } from './ContactModal';
@@ -17,7 +24,7 @@ const Header = ({ withDescription }: { withDescription: boolean }) => {
     );
 
     return (
-        <>
+        <Paper px={0}>
             <Stack>
                 <div className={classes.titleContainer}>
                     <H1
@@ -103,7 +110,7 @@ const Header = ({ withDescription }: { withDescription: boolean }) => {
             >
                 <ContactModal />
             </Modal>
-        </>
+        </Paper>
     );
 };
 

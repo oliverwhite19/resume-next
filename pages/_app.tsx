@@ -1,4 +1,3 @@
-import '../styles/globals.css';
 import { ColorScheme, Global } from '@mantine/core';
 import { MantineProvider, ColorSchemeProvider } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
@@ -33,8 +32,11 @@ const Root = ({ Component, pageProps }: AppProps) => {
     });
 
     const toggleColorScheme = (value?: ColorScheme) => {
-        setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
+        const newTheme = value || (colorScheme === 'dark' ? 'light' : 'dark');
+        document.documentElement.setAttribute('data-theme', newTheme);
+        setColorScheme(newTheme);
     };
+
     return (
         <ColorSchemeProvider
             colorScheme={colorScheme}
@@ -44,64 +46,6 @@ const Root = ({ Component, pageProps }: AppProps) => {
                 theme={{ ...{ colorScheme }, ...theme }}
                 withNormalizeCSS
             >
-                <Global
-                    styles={(theme) => ({
-                        '*, *::before, *::after': {
-                            boxSizing: 'border-box',
-                            margin: 0,
-                            padding: 0,
-                        },
-
-                        body: {
-                            ...theme.fn.fontStyles(),
-                            backgroundColor:
-                                theme.colorScheme === 'dark'
-                                    ? theme.colors.dark[7]
-                                    : theme.white,
-                            color:
-                                theme.colorScheme === 'dark'
-                                    ? theme.colors.dark[0]
-                                    : theme.black,
-                            lineHeight: theme.lineHeight,
-                        },
-                        header: {
-                            backgroundColor:
-                                theme.colorScheme === 'dark'
-                                    ? theme.colors.dark[7]
-                                    : theme.white,
-                        },
-                    })}
-                />
-                <script
-                    dangerouslySetInnerHTML={{
-                        __html: `
-              (function() {
-                window.__onThemeChange = function() {};
-                function setTheme(newTheme) {
-                  window.__theme = newTheme;
-                  preferredTheme = newTheme;
-                  document.body.className = newTheme;
-                  window.__onThemeChange(newTheme);
-                }
-                var preferredTheme;
-                try {
-                  preferredTheme = localStorage.getItem('theme');
-                } catch (err) { }
-                window.__setPreferredTheme = function(newTheme) {
-                  setTheme(newTheme);
-                  try {
-                    localStorage.setItem('theme', newTheme);
-                  } catch (err) {}
-                }
-                var darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
-                darkQuery.addListener(function(e) {
-                  window.__setPreferredTheme(e.matches ? 'dark' : 'light')
-                });
-                setTheme(preferredTheme || (darkQuery.matches ? 'dark' : 'light'));
-              })();
-            `,
-                    }}
-                />
                 <Layout>
                     <Component {...pageProps} />
                 </Layout>
