@@ -26,28 +26,6 @@ export default class _Document extends Document {
                     <link rel="apple-touch-icon" href="/logo192.png" />
                     <title>Oliver White - Resume</title>
                     <link rel="stylesheet" href="/globals.css" />
-                    <Script id="theme-loader" strategy="beforeInteractive">
-                        {`(function () {
-                function setTheme(newTheme) {
-                    document.documentElement.setAttribute(
-                        'data-theme',
-                        newTheme
-                    );
-                }
-                var preferredTheme;
-                try {
-                    preferredTheme = JSON.parse(
-                        localStorage.getItem('mantine-color-scheme')
-                    );
-                } catch (err) {}
-                var darkQuery = window.matchMedia(
-                    '(prefers-color-scheme: dark)'
-                );
-                setTheme(
-                    preferredTheme || (darkQuery.matches ? 'dark' : 'light')
-                );
-            })();`}
-                    </Script>
                 </Head>
                 <body>
                     <Main />

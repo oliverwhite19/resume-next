@@ -3,54 +3,31 @@
  * Client
 **/
 
-import * as runtime from './runtime/index';
-declare const prisma: unique symbol
-export type PrismaPromise<A> = Promise<A> & {[prisma]: true}
-type UnwrapPromise<P extends any> = P extends Promise<infer R> ? R : P
-type UnwrapTuple<Tuple extends readonly unknown[]> = {
-  [K in keyof Tuple]: K extends `${number}` ? Tuple[K] extends PrismaPromise<infer X> ? X : UnwrapPromise<Tuple[K]> : UnwrapPromise<Tuple[K]>
-};
+import * as runtime from './runtime/library';
+import $Types = runtime.Types // general types
+import $Public = runtime.Types.Public
+import $Utils = runtime.Types.Utils
+import $Extensions = runtime.Types.Extensions
+import $Result = runtime.Types.Result
+
+export type PrismaPromise<T> = $Public.PrismaPromise<T>
 
 
 /**
  * Model Employment
  * 
  */
-export type Employment = {
-  id: string
-  company: string | null
-  companyLink: string | null
-  descriptor: string | null
-  index: number | null
-}
-
+export type Employment = $Result.DefaultSelection<Prisma.$EmploymentPayload>
 /**
  * Model Position
  * 
  */
-export type Position = {
-  id: string
-  title: string | null
-  employmentId: string
-  start: Date | null
-  end: Date | null
-  details: string[]
-  technologies: string[]
-  index: number | null
-}
-
+export type Position = $Result.DefaultSelection<Prisma.$PositionPayload>
 /**
  * Model Education
  * 
  */
-export type Education = {
-  id: string
-  title: string | null
-  link: string | null
-  end: Date | null
-  description: string | null
-}
-
+export type Education = $Result.DefaultSelection<Prisma.$EducationPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -69,34 +46,9 @@ export type Education = {
 export class PrismaClient<
   T extends Prisma.PrismaClientOptions = Prisma.PrismaClientOptions,
   U = 'log' extends keyof T ? T['log'] extends Array<Prisma.LogLevel | Prisma.LogDefinition> ? Prisma.GetEvents<T['log']> : never : never,
-  GlobalReject = 'rejectOnNotFound' extends keyof T
-    ? T['rejectOnNotFound']
-    : false
-      > {
-      /**
-       * @private
-       */
-      private fetcher;
-      /**
-       * @private
-       */
-      private readonly dmmf;
-      /**
-       * @private
-       */
-      private connectionPromise?;
-      /**
-       * @private
-       */
-      private disconnectionPromise?;
-      /**
-       * @private
-       */
-      private readonly engineConfig;
-      /**
-       * @private
-       */
-      private readonly measurePerformance;
+  ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs
+> {
+  [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['other'] }
 
     /**
    * ##  Prisma Client ʲˢ
@@ -114,20 +66,22 @@ export class PrismaClient<
    */
 
   constructor(optionsArg ?: Prisma.Subset<T, Prisma.PrismaClientOptions>);
-  $on<V extends (U | 'beforeExit')>(eventType: V, callback: (event: V extends 'query' ? Prisma.QueryEvent : V extends 'beforeExit' ? () => Promise<void> : Prisma.LogEvent) => void): void;
+  $on<V extends U>(eventType: V, callback: (event: V extends 'query' ? Prisma.QueryEvent : Prisma.LogEvent) => void): void;
 
   /**
    * Connect with the database
    */
-  $connect(): Promise<void>;
+  $connect(): $Utils.JsPromise<void>;
 
   /**
    * Disconnect from the database
    */
-  $disconnect(): Promise<void>;
+  $disconnect(): $Utils.JsPromise<void>;
 
   /**
    * Add a middleware
+   * @deprecated since 4.16.0. For new code, prefer client extensions instead.
+   * @see https://pris.ly/d/extensions
    */
   $use(cb: Prisma.Middleware): void
 
@@ -144,8 +98,9 @@ export class PrismaClient<
    * 
    * Read more in our [docs](https://www.prisma.io/docs/concepts/components/prisma-client/transactions).
    */
-  $transaction<P extends PrismaPromise<any>[]>(arg: [...P]): Promise<UnwrapTuple<P>>;
+  $transaction<P extends Prisma.PrismaPromise<any>[]>(arg: [...P]): $Utils.JsPromise<runtime.Types.Utils.UnwrapTuple<P>>
 
+  $transaction<R>(fn: (prisma: Omit<PrismaClient, runtime.ITXClientDenyList>) => $Utils.JsPromise<R>, options?: { maxWait?: number, timeout?: number }): $Utils.JsPromise<R>
 
   /**
    * Executes a raw MongoDB command and returns the result of it.
@@ -160,7 +115,9 @@ export class PrismaClient<
    * 
    * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
    */
-  $runCommandRaw(command: Prisma.InputJsonObject): PrismaPromise<Prisma.JsonObject>;
+  $runCommandRaw(command: Prisma.InputJsonObject): Prisma.PrismaPromise<Prisma.JsonObject>
+
+  $extends: $Extensions.ExtendsHook<'extends', Prisma.TypeMapCb, ExtArgs>
 
       /**
    * `prisma.employment`: Exposes CRUD operations for the **Employment** model.
@@ -170,7 +127,7 @@ export class PrismaClient<
     * const employments = await prisma.employment.findMany()
     * ```
     */
-  get employment(): Prisma.EmploymentDelegate<GlobalReject>;
+  get employment(): Prisma.EmploymentDelegate<ExtArgs>;
 
   /**
    * `prisma.position`: Exposes CRUD operations for the **Position** model.
@@ -180,7 +137,7 @@ export class PrismaClient<
     * const positions = await prisma.position.findMany()
     * ```
     */
-  get position(): Prisma.PositionDelegate<GlobalReject>;
+  get position(): Prisma.PositionDelegate<ExtArgs>;
 
   /**
    * `prisma.education`: Exposes CRUD operations for the **Education** model.
@@ -190,11 +147,18 @@ export class PrismaClient<
     * const educations = await prisma.education.findMany()
     * ```
     */
-  get education(): Prisma.EducationDelegate<GlobalReject>;
+  get education(): Prisma.EducationDelegate<ExtArgs>;
 }
 
 export namespace Prisma {
   export import DMMF = runtime.DMMF
+
+  export type PrismaPromise<T> = $Public.PrismaPromise<T>
+
+  /**
+   * Validator
+   */
+  export import validator = runtime.Public.validator
 
   /**
    * Prisma Errors
@@ -225,14 +189,24 @@ export namespace Prisma {
   /**
    * Metrics 
    */
-  export import Metrics = runtime.Metrics
-  export import Metric = runtime.Metric
-  export import MetricHistogram = runtime.MetricHistogram
-  export import MetricHistogramBucket = runtime.MetricHistogramBucket
+  export type Metrics = runtime.Metrics
+  export type Metric<T> = runtime.Metric<T>
+  export type MetricHistogram = runtime.MetricHistogram
+  export type MetricHistogramBucket = runtime.MetricHistogramBucket
 
   /**
-   * Prisma Client JS version: 4.2.1
-   * Query Engine version: 2920a97877e12e055c1333079b8d19cee7f33826
+  * Extensions
+  */
+  export import Extension = $Extensions.UserArgs
+  export import getExtensionContext = runtime.Extensions.getExtensionContext
+  export import Args = $Public.Args
+  export import Payload = $Public.Payload
+  export import Result = $Public.Result
+  export import Exact = $Public.Exact
+
+  /**
+   * Prisma Client JS version: 5.2.0
+   * Query Engine version: 2804dc98259d2ea960602aca6b8e7fdc03c1758f
    */
   export type PrismaVersion = {
     client: string
@@ -288,7 +262,7 @@ export namespace Prisma {
    *
    * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-by-null-values
    */
-  export type InputJsonValue = string | number | boolean | InputJsonObject | InputJsonArray
+  export type InputJsonValue = string | number | boolean | InputJsonObject | InputJsonArray | { toJSON(): unknown }
 
   /**
    * Types of the values used to represent different kinds of `null` values when working with JSON fields.
@@ -358,19 +332,6 @@ export namespace Prisma {
     select: any
     include: any
   }
-  type HasSelect = {
-    select: any
-  }
-  type HasInclude = {
-    include: any
-  }
-  type CheckSelect<T, S, U> = T extends SelectAndInclude
-    ? 'Please either choose `select` or `include`'
-    : T extends HasSelect
-    ? U
-    : T extends HasInclude
-    ? U
-    : S
 
   /**
    * Get the type of the value, that the Promise holds.
@@ -380,7 +341,7 @@ export namespace Prisma {
   /**
    * Get the return type of a function which returns a Promise.
    */
-  export type PromiseReturnType<T extends (...args: any) => Promise<any>> = PromiseType<ReturnType<T>>
+  export type PromiseReturnType<T extends (...args: any) => $Utils.JsPromise<any>> = PromiseType<ReturnType<T>>
 
   /**
    * From T, pick a set of properties whose keys are in the union K
@@ -396,9 +357,9 @@ export namespace Prisma {
     [K in keyof T]-?: {} extends Prisma__Pick<T, K> ? never : K
   }[keyof T]
 
-  export type TruthyKeys<T> = {
-    [key in keyof T]: T[key] extends false | undefined | null ? never : key
-  }[keyof T]
+  export type TruthyKeys<T> = keyof {
+    [K in keyof T as T[K] extends false | undefined | null ? never : K]: K
+  }
 
   export type TrueKeys<T> = TruthyKeys<Prisma__Pick<T, RequiredKeys<T>>>
 
@@ -451,7 +412,7 @@ export namespace Prisma {
   ? False
   : T extends Date
   ? False
-  : T extends Buffer
+  : T extends Uint8Array
   ? False
   : T extends BigInt
   ? False
@@ -536,6 +497,16 @@ export namespace Prisma {
     [P in K]: T;
   };
 
+  // cause typescript not to expand types and preserve names
+  type NoExpand<T> = T extends unknown ? T : never;
+
+  // this type assumes the passed object is entirely optional
+  type AtLeast<O extends object, K extends string> = NoExpand<
+    O extends unknown
+    ? | (K extends keyof O ? { [P in K]: O[P] } & O : O)
+      | {[P in keyof O as P extends K ? K : never]-?: O[P]} & O
+    : never>;
+
   type _Strict<U, _U = U> = U extends unknown ? U & OptionalFlat<_Record<Exclude<Keys<_U>, keyof U>, never>> : never;
 
   export type Strict<U extends object> = ComputeRaw<_Strict<U>>;
@@ -586,19 +557,11 @@ export namespace Prisma {
 
   export type Keys<U extends Union> = U extends unknown ? keyof U : never
 
-  type Exact<A, W = unknown> = 
-  W extends unknown ? A extends Narrowable ? Cast<A, W> : Cast<
-  {[K in keyof A]: K extends keyof W ? Exact<A[K], W[K]> : never},
-  {[K in keyof W]: K extends keyof A ? Exact<A[K], W[K]> : W[K]}>
-  : never;
-
-  type Narrowable = string | number | boolean | bigint;
-
   type Cast<A, B> = A extends B ? A : B;
 
   export const type: unique symbol;
 
-  export function validator<V>(): <S>(select: Exact<S, V>) => S;
+
 
   /**
    * Used by group by
@@ -639,24 +602,20 @@ export namespace Prisma {
   type MaybeTupleToUnion<T> = T extends any[] ? TupleToUnion<T> : T
 
   /**
-   * Like `Pick`, but with an array
+   * Like `Pick`, but additionally can also accept an array of keys
    */
-  type PickArray<T, K extends Array<keyof T>> = Prisma__Pick<T, TupleToUnion<K>>
+  type PickEnumerable<T, K extends Enumerable<keyof T> | keyof T> = Prisma__Pick<T, MaybeTupleToUnion<K>>
 
   /**
    * Exclude all keys with underscores
    */
   type ExcludeUnderscoreKeys<T extends string> = T extends `_${string}` ? never : T
 
-  class PrismaClientFetcher {
-    private readonly prisma;
-    private readonly debug;
-    private readonly hooks?;
-    constructor(prisma: PrismaClient<any, any>, debug?: boolean, hooks?: Hooks | undefined);
-    request<T>(document: any, dataPath?: string[], rootField?: string, typeName?: string, isList?: boolean, callsite?: string): Promise<T>;
-    sanitizeMessage(message: string): string;
-    protected unpack(document: any, data: any, path: string[], rootField?: string, isList?: boolean): any;
-  }
+
+  export type FieldRef<Model, FieldType> = runtime.FieldRef<Model, FieldType>
+
+  type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRef<Model, FieldType>
+
 
   export const ModelName: {
     Employment: 'Employment',
@@ -671,49 +630,265 @@ export namespace Prisma {
     db?: Datasource
   }
 
-  export type RejectOnNotFound = boolean | ((error: Error) => Error)
-  export type RejectPerModel = { [P in ModelName]?: RejectOnNotFound }
-  export type RejectPerOperation =  { [P in "findUnique" | "findFirst"]?: RejectPerModel | RejectOnNotFound } 
-  type IsReject<T> = T extends true ? True : T extends (err: Error) => Error ? True : False
-  export type HasReject<
-    GlobalRejectSettings extends Prisma.PrismaClientOptions['rejectOnNotFound'],
-    LocalRejectSettings,
-    Action extends PrismaAction,
-    Model extends ModelName
-  > = LocalRejectSettings extends RejectOnNotFound
-    ? IsReject<LocalRejectSettings>
-    : GlobalRejectSettings extends RejectPerOperation
-    ? Action extends keyof GlobalRejectSettings
-      ? GlobalRejectSettings[Action] extends RejectOnNotFound
-        ? IsReject<GlobalRejectSettings[Action]>
-        : GlobalRejectSettings[Action] extends RejectPerModel
-        ? Model extends keyof GlobalRejectSettings[Action]
-          ? IsReject<GlobalRejectSettings[Action][Model]>
-          : False
-        : False
-      : False
-    : IsReject<GlobalRejectSettings>
+
+  interface TypeMapCb extends $Utils.Fn<{extArgs: $Extensions.Args}, $Utils.Record<string, any>> {
+    returns: Prisma.TypeMap<this['params']['extArgs']>
+  }
+
+  export type TypeMap<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    meta: {
+      modelProps: 'employment' | 'position' | 'education'
+      txIsolationLevel: never
+    },
+    model: {
+      Employment: {
+        payload: Prisma.$EmploymentPayload<ExtArgs>
+        fields: Prisma.EmploymentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EmploymentFindUniqueArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$EmploymentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EmploymentFindUniqueOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$EmploymentPayload>
+          }
+          findFirst: {
+            args: Prisma.EmploymentFindFirstArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$EmploymentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EmploymentFindFirstOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$EmploymentPayload>
+          }
+          findMany: {
+            args: Prisma.EmploymentFindManyArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$EmploymentPayload>[]
+          }
+          create: {
+            args: Prisma.EmploymentCreateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$EmploymentPayload>
+          }
+          createMany: {
+            args: Prisma.EmploymentCreateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          delete: {
+            args: Prisma.EmploymentDeleteArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$EmploymentPayload>
+          }
+          update: {
+            args: Prisma.EmploymentUpdateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$EmploymentPayload>
+          }
+          deleteMany: {
+            args: Prisma.EmploymentDeleteManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EmploymentUpdateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          upsert: {
+            args: Prisma.EmploymentUpsertArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$EmploymentPayload>
+          }
+          aggregate: {
+            args: Prisma.EmploymentAggregateArgs<ExtArgs>,
+            result: $Utils.Optional<AggregateEmployment>
+          }
+          groupBy: {
+            args: Prisma.EmploymentGroupByArgs<ExtArgs>,
+            result: $Utils.Optional<EmploymentGroupByOutputType>[]
+          }
+          findRaw: {
+            args: Prisma.EmploymentFindRawArgs<ExtArgs>,
+            result: Prisma.JsonObject
+          }
+          aggregateRaw: {
+            args: Prisma.EmploymentAggregateRawArgs<ExtArgs>,
+            result: Prisma.JsonObject
+          }
+          count: {
+            args: Prisma.EmploymentCountArgs<ExtArgs>,
+            result: $Utils.Optional<EmploymentCountAggregateOutputType> | number
+          }
+        }
+      }
+      Position: {
+        payload: Prisma.$PositionPayload<ExtArgs>
+        fields: Prisma.PositionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PositionFindUniqueArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$PositionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PositionFindUniqueOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$PositionPayload>
+          }
+          findFirst: {
+            args: Prisma.PositionFindFirstArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$PositionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PositionFindFirstOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$PositionPayload>
+          }
+          findMany: {
+            args: Prisma.PositionFindManyArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$PositionPayload>[]
+          }
+          create: {
+            args: Prisma.PositionCreateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$PositionPayload>
+          }
+          createMany: {
+            args: Prisma.PositionCreateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          delete: {
+            args: Prisma.PositionDeleteArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$PositionPayload>
+          }
+          update: {
+            args: Prisma.PositionUpdateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$PositionPayload>
+          }
+          deleteMany: {
+            args: Prisma.PositionDeleteManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PositionUpdateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          upsert: {
+            args: Prisma.PositionUpsertArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$PositionPayload>
+          }
+          aggregate: {
+            args: Prisma.PositionAggregateArgs<ExtArgs>,
+            result: $Utils.Optional<AggregatePosition>
+          }
+          groupBy: {
+            args: Prisma.PositionGroupByArgs<ExtArgs>,
+            result: $Utils.Optional<PositionGroupByOutputType>[]
+          }
+          findRaw: {
+            args: Prisma.PositionFindRawArgs<ExtArgs>,
+            result: Prisma.JsonObject
+          }
+          aggregateRaw: {
+            args: Prisma.PositionAggregateRawArgs<ExtArgs>,
+            result: Prisma.JsonObject
+          }
+          count: {
+            args: Prisma.PositionCountArgs<ExtArgs>,
+            result: $Utils.Optional<PositionCountAggregateOutputType> | number
+          }
+        }
+      }
+      Education: {
+        payload: Prisma.$EducationPayload<ExtArgs>
+        fields: Prisma.EducationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EducationFindUniqueArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$EducationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EducationFindUniqueOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$EducationPayload>
+          }
+          findFirst: {
+            args: Prisma.EducationFindFirstArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$EducationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EducationFindFirstOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$EducationPayload>
+          }
+          findMany: {
+            args: Prisma.EducationFindManyArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$EducationPayload>[]
+          }
+          create: {
+            args: Prisma.EducationCreateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$EducationPayload>
+          }
+          createMany: {
+            args: Prisma.EducationCreateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          delete: {
+            args: Prisma.EducationDeleteArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$EducationPayload>
+          }
+          update: {
+            args: Prisma.EducationUpdateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$EducationPayload>
+          }
+          deleteMany: {
+            args: Prisma.EducationDeleteManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EducationUpdateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          upsert: {
+            args: Prisma.EducationUpsertArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$EducationPayload>
+          }
+          aggregate: {
+            args: Prisma.EducationAggregateArgs<ExtArgs>,
+            result: $Utils.Optional<AggregateEducation>
+          }
+          groupBy: {
+            args: Prisma.EducationGroupByArgs<ExtArgs>,
+            result: $Utils.Optional<EducationGroupByOutputType>[]
+          }
+          findRaw: {
+            args: Prisma.EducationFindRawArgs<ExtArgs>,
+            result: Prisma.JsonObject
+          }
+          aggregateRaw: {
+            args: Prisma.EducationAggregateRawArgs<ExtArgs>,
+            result: Prisma.JsonObject
+          }
+          count: {
+            args: Prisma.EducationCountArgs<ExtArgs>,
+            result: $Utils.Optional<EducationCountAggregateOutputType> | number
+          }
+        }
+      }
+    }
+  } & {
+    other: {
+      payload: any
+      operations: {
+        $runCommandRaw: {
+          args: Prisma.InputJsonObject,
+          result: Prisma.JsonObject
+        }
+      }
+    }
+  }
+  export const defineExtension: $Extensions.ExtendsHook<'define', Prisma.TypeMapCb, $Extensions.DefaultArgs>
+  export type DefaultPrismaClient = PrismaClient
   export type ErrorFormat = 'pretty' | 'colorless' | 'minimal'
 
   export interface PrismaClientOptions {
     /**
-     * Configure findUnique/findFirst to throw an error if the query returns null. 
-     * @deprecated since 4.0.0. Use `findUniqueOrThrow`/`findFirstOrThrow` methods instead.
-     * @example
-     * ```
-     * // Reject on both findUnique/findFirst
-     * rejectOnNotFound: true
-     * // Reject only on findFirst with a custom error
-     * rejectOnNotFound: { findFirst: (err) => new Error("Custom Error")}
-     * // Reject on user.findUnique with a custom error
-     * rejectOnNotFound: { findUnique: {User: (err) => new Error("User not found")}}
-     * ```
-     */
-    rejectOnNotFound?: RejectOnNotFound | RejectPerOperation
-    /**
      * Overwrites the datasource url from your schema.prisma file
      */
     datasources?: Datasources
+
+    /**
+     * Overwrites the datasource url from your schema.prisma file
+     */
+    datasourceUrl?: string
 
     /**
      * @default "colorless"
@@ -737,10 +912,6 @@ export namespace Prisma {
      * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/logging#the-log-option).
      */
     log?: Array<LogLevel | LogDefinition>
-  }
-
-  export type Hooks = {
-    beforeRequest?: (options: { query: string, path: string[], rootField?: string, typeName?: string, document: any }) => any
   }
 
   /* Types for Logging */
@@ -773,8 +944,10 @@ export namespace Prisma {
 
   export type PrismaAction =
     | 'findUnique'
+    | 'findUniqueOrThrow'
     | 'findMany'
     | 'findFirst'
+    | 'findFirstOrThrow'
     | 'create'
     | 'createMany'
     | 'update'
@@ -788,9 +961,10 @@ export namespace Prisma {
     | 'count'
     | 'runCommandRaw'
     | 'findRaw'
+    | 'groupBy'
 
   /**
-   * These options are being passed in to the middleware as "params"
+   * These options are being passed into the middleware as "params"
    */
   export type MiddlewareParams = {
     model?: ModelName
@@ -805,11 +979,16 @@ export namespace Prisma {
    */
   export type Middleware<T = any> = (
     params: MiddlewareParams,
-    next: (params: MiddlewareParams) => Promise<T>,
-  ) => Promise<T>
+    next: (params: MiddlewareParams) => $Utils.JsPromise<T>,
+  ) => $Utils.JsPromise<T>
 
   // tested in getLogLevel.test.ts
   export function getLogLevel(log: Array<LogLevel | LogDefinition>): LogLevel | undefined;
+
+  /**
+   * `PrismaClient` proxy available in interactive transactions.
+   */
+  export type TransactionClient = Omit<Prisma.DefaultPrismaClient, runtime.ITXClientDenyList>
 
   export type Datasource = {
     url?: string
@@ -824,47 +1003,32 @@ export namespace Prisma {
    * Count Type EmploymentCountOutputType
    */
 
-
   export type EmploymentCountOutputType = {
     positions: number
   }
 
-  export type EmploymentCountOutputTypeSelect = {
-    positions?: boolean
+  export type EmploymentCountOutputTypeSelect<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    positions?: boolean | EmploymentCountOutputTypeCountPositionsArgs
   }
-
-  export type EmploymentCountOutputTypeGetPayload<
-    S extends boolean | null | undefined | EmploymentCountOutputTypeArgs,
-    U = keyof S
-      > = S extends true
-        ? EmploymentCountOutputType
-    : S extends undefined
-    ? never
-    : S extends EmploymentCountOutputTypeArgs
-    ?'include' extends U
-    ? EmploymentCountOutputType 
-    : 'select' extends U
-    ? {
-    [P in TrueKeys<S['select']>]:
-    P extends keyof EmploymentCountOutputType ? EmploymentCountOutputType[P] : never
-  } 
-    : EmploymentCountOutputType
-  : EmploymentCountOutputType
-
-
-
 
   // Custom InputTypes
 
   /**
    * EmploymentCountOutputType without action
    */
-  export type EmploymentCountOutputTypeArgs = {
+  export type EmploymentCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the EmploymentCountOutputType
-     * 
-    **/
-    select?: EmploymentCountOutputTypeSelect | null
+     */
+    select?: EmploymentCountOutputTypeSelect<ExtArgs> | null
+  }
+
+
+  /**
+   * EmploymentCountOutputType without action
+   */
+  export type EmploymentCountOutputTypeCountPositionsArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    where?: PositionWhereInput
   }
 
 
@@ -876,7 +1040,6 @@ export namespace Prisma {
   /**
    * Model Employment
    */
-
 
   export type AggregateEmployment = {
     _count: EmploymentCountAggregateOutputType | null
@@ -953,39 +1116,34 @@ export namespace Prisma {
     _all?: true
   }
 
-  export type EmploymentAggregateArgs = {
+  export type EmploymentAggregateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Filter which Employment to aggregate.
-     * 
-    **/
+     */
     where?: EmploymentWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Employments to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<EmploymentOrderByWithRelationInput>
+     */
+    orderBy?: EmploymentOrderByWithRelationInput | EmploymentOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
-     * 
-    **/
+     */
     cursor?: EmploymentWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Employments from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Employments.
-     * 
-    **/
+     */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
@@ -1030,10 +1188,10 @@ export namespace Prisma {
 
 
 
-  export type EmploymentGroupByArgs = {
+  export type EmploymentGroupByArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     where?: EmploymentWhereInput
-    orderBy?: Enumerable<EmploymentOrderByWithAggregationInput>
-    by: Array<EmploymentScalarFieldEnum>
+    orderBy?: EmploymentOrderByWithAggregationInput | EmploymentOrderByWithAggregationInput[]
+    by: EmploymentScalarFieldEnum[] | EmploymentScalarFieldEnum
     having?: EmploymentScalarWhereWithAggregatesInput
     take?: number
     skip?: number
@@ -1043,7 +1201,6 @@ export namespace Prisma {
     _min?: EmploymentMinAggregateInputType
     _max?: EmploymentMaxAggregateInputType
   }
-
 
   export type EmploymentGroupByOutputType = {
     id: string
@@ -1058,9 +1215,9 @@ export namespace Prisma {
     _max: EmploymentMaxAggregateOutputType | null
   }
 
-  type GetEmploymentGroupByPayload<T extends EmploymentGroupByArgs> = PrismaPromise<
+  type GetEmploymentGroupByPayload<T extends EmploymentGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickArray<EmploymentGroupByOutputType, T['by']> &
+      PickEnumerable<EmploymentGroupByOutputType, T['by']> &
         {
           [P in ((keyof T) & (keyof EmploymentGroupByOutputType))]: P extends '_count'
             ? T[P] extends boolean
@@ -1072,52 +1229,55 @@ export namespace Prisma {
     >
 
 
-  export type EmploymentSelect = {
+  export type EmploymentSelect<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     company?: boolean
     companyLink?: boolean
     descriptor?: boolean
-    positions?: boolean | PositionFindManyArgs
     index?: boolean
-    _count?: boolean | EmploymentCountOutputTypeArgs
+    positions?: boolean | Employment$positionsArgs<ExtArgs>
+    _count?: boolean | EmploymentCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["employment"]>
+
+  export type EmploymentSelectScalar = {
+    id?: boolean
+    company?: boolean
+    companyLink?: boolean
+    descriptor?: boolean
+    index?: boolean
   }
 
-  export type EmploymentInclude = {
-    positions?: boolean | PositionFindManyArgs
-    _count?: boolean | EmploymentCountOutputTypeArgs
+  export type EmploymentInclude<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    positions?: boolean | Employment$positionsArgs<ExtArgs>
+    _count?: boolean | EmploymentCountOutputTypeDefaultArgs<ExtArgs>
   }
 
-  export type EmploymentGetPayload<
-    S extends boolean | null | undefined | EmploymentArgs,
-    U = keyof S
-      > = S extends true
-        ? Employment
-    : S extends undefined
-    ? never
-    : S extends EmploymentArgs | EmploymentFindManyArgs
-    ?'include' extends U
-    ? Employment  & {
-    [P in TrueKeys<S['include']>]:
-        P extends 'positions' ? Array < PositionGetPayload<S['include'][P]>>  :
-        P extends '_count' ? EmploymentCountOutputTypeGetPayload<S['include'][P]> :  never
-  } 
-    : 'select' extends U
-    ? {
-    [P in TrueKeys<S['select']>]:
-        P extends 'positions' ? Array < PositionGetPayload<S['select'][P]>>  :
-        P extends '_count' ? EmploymentCountOutputTypeGetPayload<S['select'][P]> :  P extends keyof Employment ? Employment[P] : never
-  } 
-    : Employment
-  : Employment
+
+  export type $EmploymentPayload<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    name: "Employment"
+    objects: {
+      positions: Prisma.$PositionPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetResult<{
+      id: string
+      company: string | null
+      companyLink: string | null
+      descriptor: string | null
+      index: number | null
+    }, ExtArgs["result"]["employment"]>
+    composites: {}
+  }
 
 
-  type EmploymentCountArgs = Merge<
+  type EmploymentGetPayload<S extends boolean | null | undefined | EmploymentDefaultArgs> = $Result.GetResult<Prisma.$EmploymentPayload, S>
+
+  type EmploymentCountArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = 
     Omit<EmploymentFindManyArgs, 'select' | 'include'> & {
       select?: EmploymentCountAggregateInputType | true
     }
-  >
 
-  export interface EmploymentDelegate<GlobalRejectSettings> {
+  export interface EmploymentDelegate<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Employment'], meta: { name: 'Employment' } }
     /**
      * Find zero or one Employment that matches the filter.
      * @param {EmploymentFindUniqueArgs} args - Arguments to find a Employment
@@ -1129,9 +1289,25 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findUnique<T extends EmploymentFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args: SelectSubset<T, EmploymentFindUniqueArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'Employment'> extends True ? CheckSelect<T, Prisma__EmploymentClient<Employment>, Prisma__EmploymentClient<EmploymentGetPayload<T>>> : CheckSelect<T, Prisma__EmploymentClient<Employment | null >, Prisma__EmploymentClient<EmploymentGetPayload<T> | null >>
+    findUnique<T extends EmploymentFindUniqueArgs<ExtArgs>>(
+      args: SelectSubset<T, EmploymentFindUniqueArgs<ExtArgs>>
+    ): Prisma__EmploymentClient<$Result.GetResult<Prisma.$EmploymentPayload<ExtArgs>, T, 'findUnique'> | null, null, ExtArgs>
+
+    /**
+     * Find one Employment that matches the filter or throw an error  with `error.code='P2025'` 
+     *     if no matches were found.
+     * @param {EmploymentFindUniqueOrThrowArgs} args - Arguments to find a Employment
+     * @example
+     * // Get one Employment
+     * const employment = await prisma.employment.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends EmploymentFindUniqueOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, EmploymentFindUniqueOrThrowArgs<ExtArgs>>
+    ): Prisma__EmploymentClient<$Result.GetResult<Prisma.$EmploymentPayload<ExtArgs>, T, 'findUniqueOrThrow'>, never, ExtArgs>
 
     /**
      * Find the first Employment that matches the filter.
@@ -1146,9 +1322,27 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findFirst<T extends EmploymentFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args?: SelectSubset<T, EmploymentFindFirstArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'Employment'> extends True ? CheckSelect<T, Prisma__EmploymentClient<Employment>, Prisma__EmploymentClient<EmploymentGetPayload<T>>> : CheckSelect<T, Prisma__EmploymentClient<Employment | null >, Prisma__EmploymentClient<EmploymentGetPayload<T> | null >>
+    findFirst<T extends EmploymentFindFirstArgs<ExtArgs>>(
+      args?: SelectSubset<T, EmploymentFindFirstArgs<ExtArgs>>
+    ): Prisma__EmploymentClient<$Result.GetResult<Prisma.$EmploymentPayload<ExtArgs>, T, 'findFirst'> | null, null, ExtArgs>
+
+    /**
+     * Find the first Employment that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmploymentFindFirstOrThrowArgs} args - Arguments to find a Employment
+     * @example
+     * // Get one Employment
+     * const employment = await prisma.employment.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends EmploymentFindFirstOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, EmploymentFindFirstOrThrowArgs<ExtArgs>>
+    ): Prisma__EmploymentClient<$Result.GetResult<Prisma.$EmploymentPayload<ExtArgs>, T, 'findFirstOrThrow'>, never, ExtArgs>
 
     /**
      * Find zero or more Employments that matches the filter.
@@ -1166,9 +1360,9 @@ export namespace Prisma {
      * const employmentWithIdOnly = await prisma.employment.findMany({ select: { id: true } })
      * 
     **/
-    findMany<T extends EmploymentFindManyArgs>(
-      args?: SelectSubset<T, EmploymentFindManyArgs>
-    ): CheckSelect<T, PrismaPromise<Array<Employment>>, PrismaPromise<Array<EmploymentGetPayload<T>>>>
+    findMany<T extends EmploymentFindManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, EmploymentFindManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmploymentPayload<ExtArgs>, T, 'findMany'>>
 
     /**
      * Create a Employment.
@@ -1182,9 +1376,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    create<T extends EmploymentCreateArgs>(
-      args: SelectSubset<T, EmploymentCreateArgs>
-    ): CheckSelect<T, Prisma__EmploymentClient<Employment>, Prisma__EmploymentClient<EmploymentGetPayload<T>>>
+    create<T extends EmploymentCreateArgs<ExtArgs>>(
+      args: SelectSubset<T, EmploymentCreateArgs<ExtArgs>>
+    ): Prisma__EmploymentClient<$Result.GetResult<Prisma.$EmploymentPayload<ExtArgs>, T, 'create'>, never, ExtArgs>
 
     /**
      * Create many Employments.
@@ -1198,9 +1392,9 @@ export namespace Prisma {
      *     })
      *     
     **/
-    createMany<T extends EmploymentCreateManyArgs>(
-      args?: SelectSubset<T, EmploymentCreateManyArgs>
-    ): PrismaPromise<BatchPayload>
+    createMany<T extends EmploymentCreateManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, EmploymentCreateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Delete a Employment.
@@ -1214,9 +1408,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    delete<T extends EmploymentDeleteArgs>(
-      args: SelectSubset<T, EmploymentDeleteArgs>
-    ): CheckSelect<T, Prisma__EmploymentClient<Employment>, Prisma__EmploymentClient<EmploymentGetPayload<T>>>
+    delete<T extends EmploymentDeleteArgs<ExtArgs>>(
+      args: SelectSubset<T, EmploymentDeleteArgs<ExtArgs>>
+    ): Prisma__EmploymentClient<$Result.GetResult<Prisma.$EmploymentPayload<ExtArgs>, T, 'delete'>, never, ExtArgs>
 
     /**
      * Update one Employment.
@@ -1233,9 +1427,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    update<T extends EmploymentUpdateArgs>(
-      args: SelectSubset<T, EmploymentUpdateArgs>
-    ): CheckSelect<T, Prisma__EmploymentClient<Employment>, Prisma__EmploymentClient<EmploymentGetPayload<T>>>
+    update<T extends EmploymentUpdateArgs<ExtArgs>>(
+      args: SelectSubset<T, EmploymentUpdateArgs<ExtArgs>>
+    ): Prisma__EmploymentClient<$Result.GetResult<Prisma.$EmploymentPayload<ExtArgs>, T, 'update'>, never, ExtArgs>
 
     /**
      * Delete zero or more Employments.
@@ -1249,9 +1443,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    deleteMany<T extends EmploymentDeleteManyArgs>(
-      args?: SelectSubset<T, EmploymentDeleteManyArgs>
-    ): PrismaPromise<BatchPayload>
+    deleteMany<T extends EmploymentDeleteManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, EmploymentDeleteManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Update zero or more Employments.
@@ -1270,9 +1464,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    updateMany<T extends EmploymentUpdateManyArgs>(
-      args: SelectSubset<T, EmploymentUpdateManyArgs>
-    ): PrismaPromise<BatchPayload>
+    updateMany<T extends EmploymentUpdateManyArgs<ExtArgs>>(
+      args: SelectSubset<T, EmploymentUpdateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Create or update one Employment.
@@ -1291,9 +1485,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    upsert<T extends EmploymentUpsertArgs>(
-      args: SelectSubset<T, EmploymentUpsertArgs>
-    ): CheckSelect<T, Prisma__EmploymentClient<Employment>, Prisma__EmploymentClient<EmploymentGetPayload<T>>>
+    upsert<T extends EmploymentUpsertArgs<ExtArgs>>(
+      args: SelectSubset<T, EmploymentUpsertArgs<ExtArgs>>
+    ): Prisma__EmploymentClient<$Result.GetResult<Prisma.$EmploymentPayload<ExtArgs>, T, 'upsert'>, never, ExtArgs>
 
     /**
      * Find zero or more Employments that matches the filter.
@@ -1305,7 +1499,7 @@ export namespace Prisma {
     **/
     findRaw(
       args?: EmploymentFindRawArgs
-    ): PrismaPromise<JsonObject>
+    ): Prisma.PrismaPromise<JsonObject>
 
     /**
      * Perform aggregation operations on a Employment.
@@ -1320,41 +1514,7 @@ export namespace Prisma {
     **/
     aggregateRaw(
       args?: EmploymentAggregateRawArgs
-    ): PrismaPromise<JsonObject>
-
-    /**
-     * Find one Employment that matches the filter or throw
-     * `NotFoundError` if no matches were found.
-     * @param {EmploymentFindUniqueOrThrowArgs} args - Arguments to find a Employment
-     * @example
-     * // Get one Employment
-     * const employment = await prisma.employment.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findUniqueOrThrow<T extends EmploymentFindUniqueOrThrowArgs>(
-      args?: SelectSubset<T, EmploymentFindUniqueOrThrowArgs>
-    ): CheckSelect<T, Prisma__EmploymentClient<Employment>, Prisma__EmploymentClient<EmploymentGetPayload<T>>>
-
-    /**
-     * Find the first Employment that matches the filter or
-     * throw `NotFoundError` if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {EmploymentFindFirstOrThrowArgs} args - Arguments to find a Employment
-     * @example
-     * // Get one Employment
-     * const employment = await prisma.employment.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findFirstOrThrow<T extends EmploymentFindFirstOrThrowArgs>(
-      args?: SelectSubset<T, EmploymentFindFirstOrThrowArgs>
-    ): CheckSelect<T, Prisma__EmploymentClient<Employment>, Prisma__EmploymentClient<EmploymentGetPayload<T>>>
+    ): Prisma.PrismaPromise<JsonObject>
 
     /**
      * Count the number of Employments.
@@ -1371,8 +1531,8 @@ export namespace Prisma {
     **/
     count<T extends EmploymentCountArgs>(
       args?: Subset<T, EmploymentCountArgs>,
-    ): PrismaPromise<
-      T extends _Record<'select', any>
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
           : GetScalarType<T['select'], EmploymentCountAggregateOutputType>
@@ -1403,7 +1563,7 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends EmploymentAggregateArgs>(args: Subset<T, EmploymentAggregateArgs>): PrismaPromise<GetEmploymentAggregateType<T>>
+    aggregate<T extends EmploymentAggregateArgs>(args: Subset<T, EmploymentAggregateArgs>): Prisma.PrismaPromise<GetEmploymentAggregateType<T>>
 
     /**
      * Group by Employment.
@@ -1433,7 +1593,7 @@ export namespace Prisma {
         ? { orderBy: EmploymentGroupByArgs['orderBy'] }
         : { orderBy?: EmploymentGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends TupleToUnion<T['by']>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
       HavingFields extends GetHavingFields<T['having']>,
       HavingValid extends Has<ByFields, HavingFields>,
@@ -1480,7 +1640,11 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, EmploymentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEmploymentGroupByPayload<T> : PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, EmploymentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEmploymentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Employment model
+   */
+  readonly fields: EmploymentFieldRefs;
   }
 
   /**
@@ -1489,259 +1653,278 @@ export namespace Prisma {
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export class Prisma__EmploymentClient<T> implements PrismaPromise<T> {
-    [prisma]: true;
-    private readonly _dmmf;
-    private readonly _fetcher;
-    private readonly _queryType;
-    private readonly _rootField;
-    private readonly _clientMethod;
-    private readonly _args;
-    private readonly _dataPath;
-    private readonly _errorFormat;
-    private readonly _measurePerformance?;
-    private _isList;
-    private _callsite;
-    private _requestPromise?;
-    constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
-    readonly [Symbol.toStringTag]: 'PrismaClientPromise';
+  export interface Prisma__EmploymentClient<T, Null = never, ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
 
-    positions<T extends PositionFindManyArgs = {}>(args?: Subset<T, PositionFindManyArgs>): CheckSelect<T, PrismaPromise<Array<Position>>, PrismaPromise<Array<PositionGetPayload<T>>>>;
+    positions<T extends Employment$positionsArgs<ExtArgs> = {}>(args?: Subset<T, Employment$positionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PositionPayload<ExtArgs>, T, 'findMany'> | Null>;
 
-    private get _document();
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>;
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult>;
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>;
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): Promise<T>;
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>;
   }
+
+
+
+  /**
+   * Fields of the Employment model
+   */ 
+  interface EmploymentFieldRefs {
+    readonly id: FieldRef<"Employment", 'String'>
+    readonly company: FieldRef<"Employment", 'String'>
+    readonly companyLink: FieldRef<"Employment", 'String'>
+    readonly descriptor: FieldRef<"Employment", 'String'>
+    readonly index: FieldRef<"Employment", 'Int'>
+  }
+    
 
   // Custom InputTypes
 
   /**
-   * Employment base type for findUnique actions
+   * Employment findUnique
    */
-  export type EmploymentFindUniqueArgsBase = {
+  export type EmploymentFindUniqueArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Employment
-     * 
-    **/
-    select?: EmploymentSelect | null
+     */
+    select?: EmploymentSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: EmploymentInclude | null
+     */
+    include?: EmploymentInclude<ExtArgs> | null
     /**
      * Filter, which Employment to fetch.
-     * 
-    **/
+     */
     where: EmploymentWhereUniqueInput
   }
 
-  /**
-   * Employment: findUnique
-   */
-  export interface EmploymentFindUniqueArgs extends EmploymentFindUniqueArgsBase {
-   /**
-    * Throw an Error if query returns no results
-    * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
-    */
-    rejectOnNotFound?: RejectOnNotFound
-  }
-      
 
   /**
-   * Employment base type for findFirst actions
+   * Employment findUniqueOrThrow
    */
-  export type EmploymentFindFirstArgsBase = {
+  export type EmploymentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Employment
-     * 
-    **/
-    select?: EmploymentSelect | null
+     */
+    select?: EmploymentSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: EmploymentInclude | null
+     */
+    include?: EmploymentInclude<ExtArgs> | null
     /**
      * Filter, which Employment to fetch.
-     * 
-    **/
+     */
+    where: EmploymentWhereUniqueInput
+  }
+
+
+  /**
+   * Employment findFirst
+   */
+  export type EmploymentFindFirstArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Employment
+     */
+    select?: EmploymentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: EmploymentInclude<ExtArgs> | null
+    /**
+     * Filter, which Employment to fetch.
+     */
     where?: EmploymentWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Employments to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<EmploymentOrderByWithRelationInput>
+     */
+    orderBy?: EmploymentOrderByWithRelationInput | EmploymentOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for Employments.
-     * 
-    **/
+     */
     cursor?: EmploymentWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Employments from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Employments.
-     * 
-    **/
+     */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of Employments.
-     * 
-    **/
-    distinct?: Enumerable<EmploymentScalarFieldEnum>
+     */
+    distinct?: EmploymentScalarFieldEnum | EmploymentScalarFieldEnum[]
   }
 
-  /**
-   * Employment: findFirst
-   */
-  export interface EmploymentFindFirstArgs extends EmploymentFindFirstArgsBase {
-   /**
-    * Throw an Error if query returns no results
-    * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
-    */
-    rejectOnNotFound?: RejectOnNotFound
-  }
-      
 
   /**
-   * Employment findMany
+   * Employment findFirstOrThrow
    */
-  export type EmploymentFindManyArgs = {
+  export type EmploymentFindFirstOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Employment
-     * 
-    **/
-    select?: EmploymentSelect | null
+     */
+    select?: EmploymentSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: EmploymentInclude | null
+     */
+    include?: EmploymentInclude<ExtArgs> | null
     /**
-     * Filter, which Employments to fetch.
-     * 
-    **/
+     * Filter, which Employment to fetch.
+     */
     where?: EmploymentWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Employments to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<EmploymentOrderByWithRelationInput>
+     */
+    orderBy?: EmploymentOrderByWithRelationInput | EmploymentOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for listing Employments.
-     * 
-    **/
+     * Sets the position for searching for Employments.
+     */
     cursor?: EmploymentWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Employments from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Employments.
-     * 
-    **/
+     */
     skip?: number
-    distinct?: Enumerable<EmploymentScalarFieldEnum>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Employments.
+     */
+    distinct?: EmploymentScalarFieldEnum | EmploymentScalarFieldEnum[]
+  }
+
+
+  /**
+   * Employment findMany
+   */
+  export type EmploymentFindManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Employment
+     */
+    select?: EmploymentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: EmploymentInclude<ExtArgs> | null
+    /**
+     * Filter, which Employments to fetch.
+     */
+    where?: EmploymentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Employments to fetch.
+     */
+    orderBy?: EmploymentOrderByWithRelationInput | EmploymentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Employments.
+     */
+    cursor?: EmploymentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Employments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Employments.
+     */
+    skip?: number
+    distinct?: EmploymentScalarFieldEnum | EmploymentScalarFieldEnum[]
   }
 
 
   /**
    * Employment create
    */
-  export type EmploymentCreateArgs = {
+  export type EmploymentCreateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Employment
-     * 
-    **/
-    select?: EmploymentSelect | null
+     */
+    select?: EmploymentSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: EmploymentInclude | null
+     */
+    include?: EmploymentInclude<ExtArgs> | null
     /**
      * The data needed to create a Employment.
-     * 
-    **/
-    data: XOR<EmploymentCreateInput, EmploymentUncheckedCreateInput>
+     */
+    data?: XOR<EmploymentCreateInput, EmploymentUncheckedCreateInput>
   }
 
 
   /**
    * Employment createMany
    */
-  export type EmploymentCreateManyArgs = {
+  export type EmploymentCreateManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * The data used to create many Employments.
-     * 
-    **/
-    data: Enumerable<EmploymentCreateManyInput>
+     */
+    data: EmploymentCreateManyInput | EmploymentCreateManyInput[]
   }
 
 
   /**
    * Employment update
    */
-  export type EmploymentUpdateArgs = {
+  export type EmploymentUpdateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Employment
-     * 
-    **/
-    select?: EmploymentSelect | null
+     */
+    select?: EmploymentSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: EmploymentInclude | null
+     */
+    include?: EmploymentInclude<ExtArgs> | null
     /**
      * The data needed to update a Employment.
-     * 
-    **/
+     */
     data: XOR<EmploymentUpdateInput, EmploymentUncheckedUpdateInput>
     /**
      * Choose, which Employment to update.
-     * 
-    **/
+     */
     where: EmploymentWhereUniqueInput
   }
 
@@ -1749,16 +1932,14 @@ export namespace Prisma {
   /**
    * Employment updateMany
    */
-  export type EmploymentUpdateManyArgs = {
+  export type EmploymentUpdateManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * The data used to update Employments.
-     * 
-    **/
+     */
     data: XOR<EmploymentUpdateManyMutationInput, EmploymentUncheckedUpdateManyInput>
     /**
      * Filter which Employments to update
-     * 
-    **/
+     */
     where?: EmploymentWhereInput
   }
 
@@ -1766,31 +1947,26 @@ export namespace Prisma {
   /**
    * Employment upsert
    */
-  export type EmploymentUpsertArgs = {
+  export type EmploymentUpsertArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Employment
-     * 
-    **/
-    select?: EmploymentSelect | null
+     */
+    select?: EmploymentSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: EmploymentInclude | null
+     */
+    include?: EmploymentInclude<ExtArgs> | null
     /**
      * The filter to search for the Employment to update in case it exists.
-     * 
-    **/
+     */
     where: EmploymentWhereUniqueInput
     /**
      * In case the Employment found by the `where` argument doesn't exist, create a new Employment with this data.
-     * 
-    **/
+     */
     create: XOR<EmploymentCreateInput, EmploymentUncheckedCreateInput>
     /**
      * In case the Employment was found with the provided `where` argument, update it with this data.
-     * 
-    **/
+     */
     update: XOR<EmploymentUpdateInput, EmploymentUncheckedUpdateInput>
   }
 
@@ -1798,21 +1974,18 @@ export namespace Prisma {
   /**
    * Employment delete
    */
-  export type EmploymentDeleteArgs = {
+  export type EmploymentDeleteArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Employment
-     * 
-    **/
-    select?: EmploymentSelect | null
+     */
+    select?: EmploymentSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: EmploymentInclude | null
+     */
+    include?: EmploymentInclude<ExtArgs> | null
     /**
      * Filter which Employment to delete.
-     * 
-    **/
+     */
     where: EmploymentWhereUniqueInput
   }
 
@@ -1820,11 +1993,10 @@ export namespace Prisma {
   /**
    * Employment deleteMany
    */
-  export type EmploymentDeleteManyArgs = {
+  export type EmploymentDeleteManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Filter which Employments to delete
-     * 
-    **/
+     */
     where?: EmploymentWhereInput
   }
 
@@ -1832,16 +2004,14 @@ export namespace Prisma {
   /**
    * Employment findRaw
    */
-  export type EmploymentFindRawArgs = {
+  export type EmploymentFindRawArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
-     * 
-    **/
+     */
     filter?: InputJsonValue
     /**
      * Additional options to pass to the `find` command ${@link https://docs.mongodb.com/manual/reference/command/find/#command-fields MongoDB Docs}.
-     * 
-    **/
+     */
     options?: InputJsonValue
   }
 
@@ -1849,46 +2019,51 @@ export namespace Prisma {
   /**
    * Employment aggregateRaw
    */
-  export type EmploymentAggregateRawArgs = {
+  export type EmploymentAggregateRawArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
-     * 
-    **/
-    pipeline?: Array<InputJsonValue>
+     */
+    pipeline?: InputJsonValue[]
     /**
      * Additional options to pass to the `aggregate` command ${@link https://docs.mongodb.com/manual/reference/command/aggregate/#command-fields MongoDB Docs}.
-     * 
-    **/
+     */
     options?: InputJsonValue
   }
 
 
   /**
-   * Employment: findUniqueOrThrow
+   * Employment.positions
    */
-  export type EmploymentFindUniqueOrThrowArgs = EmploymentFindUniqueArgsBase
-      
+  export type Employment$positionsArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Position
+     */
+    select?: PositionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: PositionInclude<ExtArgs> | null
+    where?: PositionWhereInput
+    orderBy?: PositionOrderByWithRelationInput | PositionOrderByWithRelationInput[]
+    cursor?: PositionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PositionScalarFieldEnum | PositionScalarFieldEnum[]
+  }
 
-  /**
-   * Employment: findFirstOrThrow
-   */
-  export type EmploymentFindFirstOrThrowArgs = EmploymentFindFirstArgsBase
-      
 
   /**
    * Employment without action
    */
-  export type EmploymentArgs = {
+  export type EmploymentDefaultArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Employment
-     * 
-    **/
-    select?: EmploymentSelect | null
+     */
+    select?: EmploymentSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: EmploymentInclude | null
+     */
+    include?: EmploymentInclude<ExtArgs> | null
   }
 
 
@@ -1896,7 +2071,6 @@ export namespace Prisma {
   /**
    * Model Position
    */
-
 
   export type AggregatePosition = {
     _count: PositionCountAggregateOutputType | null
@@ -1983,39 +2157,34 @@ export namespace Prisma {
     _all?: true
   }
 
-  export type PositionAggregateArgs = {
+  export type PositionAggregateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Filter which Position to aggregate.
-     * 
-    **/
+     */
     where?: PositionWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Positions to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<PositionOrderByWithRelationInput>
+     */
+    orderBy?: PositionOrderByWithRelationInput | PositionOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
-     * 
-    **/
+     */
     cursor?: PositionWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Positions from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Positions.
-     * 
-    **/
+     */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
@@ -2060,10 +2229,10 @@ export namespace Prisma {
 
 
 
-  export type PositionGroupByArgs = {
+  export type PositionGroupByArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     where?: PositionWhereInput
-    orderBy?: Enumerable<PositionOrderByWithAggregationInput>
-    by: Array<PositionScalarFieldEnum>
+    orderBy?: PositionOrderByWithAggregationInput | PositionOrderByWithAggregationInput[]
+    by: PositionScalarFieldEnum[] | PositionScalarFieldEnum
     having?: PositionScalarWhereWithAggregatesInput
     take?: number
     skip?: number
@@ -2073,7 +2242,6 @@ export namespace Prisma {
     _min?: PositionMinAggregateInputType
     _max?: PositionMaxAggregateInputType
   }
-
 
   export type PositionGroupByOutputType = {
     id: string
@@ -2091,9 +2259,9 @@ export namespace Prisma {
     _max: PositionMaxAggregateOutputType | null
   }
 
-  type GetPositionGroupByPayload<T extends PositionGroupByArgs> = PrismaPromise<
+  type GetPositionGroupByPayload<T extends PositionGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickArray<PositionGroupByOutputType, T['by']> &
+      PickEnumerable<PositionGroupByOutputType, T['by']> &
         {
           [P in ((keyof T) & (keyof PositionGroupByOutputType))]: P extends '_count'
             ? T[P] extends boolean
@@ -2105,10 +2273,21 @@ export namespace Prisma {
     >
 
 
-  export type PositionSelect = {
+  export type PositionSelect<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     title?: boolean
-    employment?: boolean | EmploymentArgs
+    employmentId?: boolean
+    start?: boolean
+    end?: boolean
+    details?: boolean
+    technologies?: boolean
+    index?: boolean
+    employment?: boolean | EmploymentDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["position"]>
+
+  export type PositionSelectScalar = {
+    id?: boolean
+    title?: boolean
     employmentId?: boolean
     start?: boolean
     end?: boolean
@@ -2117,39 +2296,39 @@ export namespace Prisma {
     index?: boolean
   }
 
-  export type PositionInclude = {
-    employment?: boolean | EmploymentArgs
+  export type PositionInclude<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    employment?: boolean | EmploymentDefaultArgs<ExtArgs>
   }
 
-  export type PositionGetPayload<
-    S extends boolean | null | undefined | PositionArgs,
-    U = keyof S
-      > = S extends true
-        ? Position
-    : S extends undefined
-    ? never
-    : S extends PositionArgs | PositionFindManyArgs
-    ?'include' extends U
-    ? Position  & {
-    [P in TrueKeys<S['include']>]:
-        P extends 'employment' ? EmploymentGetPayload<S['include'][P]> :  never
-  } 
-    : 'select' extends U
-    ? {
-    [P in TrueKeys<S['select']>]:
-        P extends 'employment' ? EmploymentGetPayload<S['select'][P]> :  P extends keyof Position ? Position[P] : never
-  } 
-    : Position
-  : Position
+
+  export type $PositionPayload<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    name: "Position"
+    objects: {
+      employment: Prisma.$EmploymentPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetResult<{
+      id: string
+      title: string | null
+      employmentId: string
+      start: Date | null
+      end: Date | null
+      details: string[]
+      technologies: string[]
+      index: number | null
+    }, ExtArgs["result"]["position"]>
+    composites: {}
+  }
 
 
-  type PositionCountArgs = Merge<
+  type PositionGetPayload<S extends boolean | null | undefined | PositionDefaultArgs> = $Result.GetResult<Prisma.$PositionPayload, S>
+
+  type PositionCountArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = 
     Omit<PositionFindManyArgs, 'select' | 'include'> & {
       select?: PositionCountAggregateInputType | true
     }
-  >
 
-  export interface PositionDelegate<GlobalRejectSettings> {
+  export interface PositionDelegate<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Position'], meta: { name: 'Position' } }
     /**
      * Find zero or one Position that matches the filter.
      * @param {PositionFindUniqueArgs} args - Arguments to find a Position
@@ -2161,9 +2340,25 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findUnique<T extends PositionFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args: SelectSubset<T, PositionFindUniqueArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'Position'> extends True ? CheckSelect<T, Prisma__PositionClient<Position>, Prisma__PositionClient<PositionGetPayload<T>>> : CheckSelect<T, Prisma__PositionClient<Position | null >, Prisma__PositionClient<PositionGetPayload<T> | null >>
+    findUnique<T extends PositionFindUniqueArgs<ExtArgs>>(
+      args: SelectSubset<T, PositionFindUniqueArgs<ExtArgs>>
+    ): Prisma__PositionClient<$Result.GetResult<Prisma.$PositionPayload<ExtArgs>, T, 'findUnique'> | null, null, ExtArgs>
+
+    /**
+     * Find one Position that matches the filter or throw an error  with `error.code='P2025'` 
+     *     if no matches were found.
+     * @param {PositionFindUniqueOrThrowArgs} args - Arguments to find a Position
+     * @example
+     * // Get one Position
+     * const position = await prisma.position.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends PositionFindUniqueOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, PositionFindUniqueOrThrowArgs<ExtArgs>>
+    ): Prisma__PositionClient<$Result.GetResult<Prisma.$PositionPayload<ExtArgs>, T, 'findUniqueOrThrow'>, never, ExtArgs>
 
     /**
      * Find the first Position that matches the filter.
@@ -2178,9 +2373,27 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findFirst<T extends PositionFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args?: SelectSubset<T, PositionFindFirstArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'Position'> extends True ? CheckSelect<T, Prisma__PositionClient<Position>, Prisma__PositionClient<PositionGetPayload<T>>> : CheckSelect<T, Prisma__PositionClient<Position | null >, Prisma__PositionClient<PositionGetPayload<T> | null >>
+    findFirst<T extends PositionFindFirstArgs<ExtArgs>>(
+      args?: SelectSubset<T, PositionFindFirstArgs<ExtArgs>>
+    ): Prisma__PositionClient<$Result.GetResult<Prisma.$PositionPayload<ExtArgs>, T, 'findFirst'> | null, null, ExtArgs>
+
+    /**
+     * Find the first Position that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PositionFindFirstOrThrowArgs} args - Arguments to find a Position
+     * @example
+     * // Get one Position
+     * const position = await prisma.position.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends PositionFindFirstOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, PositionFindFirstOrThrowArgs<ExtArgs>>
+    ): Prisma__PositionClient<$Result.GetResult<Prisma.$PositionPayload<ExtArgs>, T, 'findFirstOrThrow'>, never, ExtArgs>
 
     /**
      * Find zero or more Positions that matches the filter.
@@ -2198,9 +2411,9 @@ export namespace Prisma {
      * const positionWithIdOnly = await prisma.position.findMany({ select: { id: true } })
      * 
     **/
-    findMany<T extends PositionFindManyArgs>(
-      args?: SelectSubset<T, PositionFindManyArgs>
-    ): CheckSelect<T, PrismaPromise<Array<Position>>, PrismaPromise<Array<PositionGetPayload<T>>>>
+    findMany<T extends PositionFindManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, PositionFindManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PositionPayload<ExtArgs>, T, 'findMany'>>
 
     /**
      * Create a Position.
@@ -2214,9 +2427,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    create<T extends PositionCreateArgs>(
-      args: SelectSubset<T, PositionCreateArgs>
-    ): CheckSelect<T, Prisma__PositionClient<Position>, Prisma__PositionClient<PositionGetPayload<T>>>
+    create<T extends PositionCreateArgs<ExtArgs>>(
+      args: SelectSubset<T, PositionCreateArgs<ExtArgs>>
+    ): Prisma__PositionClient<$Result.GetResult<Prisma.$PositionPayload<ExtArgs>, T, 'create'>, never, ExtArgs>
 
     /**
      * Create many Positions.
@@ -2230,9 +2443,9 @@ export namespace Prisma {
      *     })
      *     
     **/
-    createMany<T extends PositionCreateManyArgs>(
-      args?: SelectSubset<T, PositionCreateManyArgs>
-    ): PrismaPromise<BatchPayload>
+    createMany<T extends PositionCreateManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, PositionCreateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Delete a Position.
@@ -2246,9 +2459,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    delete<T extends PositionDeleteArgs>(
-      args: SelectSubset<T, PositionDeleteArgs>
-    ): CheckSelect<T, Prisma__PositionClient<Position>, Prisma__PositionClient<PositionGetPayload<T>>>
+    delete<T extends PositionDeleteArgs<ExtArgs>>(
+      args: SelectSubset<T, PositionDeleteArgs<ExtArgs>>
+    ): Prisma__PositionClient<$Result.GetResult<Prisma.$PositionPayload<ExtArgs>, T, 'delete'>, never, ExtArgs>
 
     /**
      * Update one Position.
@@ -2265,9 +2478,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    update<T extends PositionUpdateArgs>(
-      args: SelectSubset<T, PositionUpdateArgs>
-    ): CheckSelect<T, Prisma__PositionClient<Position>, Prisma__PositionClient<PositionGetPayload<T>>>
+    update<T extends PositionUpdateArgs<ExtArgs>>(
+      args: SelectSubset<T, PositionUpdateArgs<ExtArgs>>
+    ): Prisma__PositionClient<$Result.GetResult<Prisma.$PositionPayload<ExtArgs>, T, 'update'>, never, ExtArgs>
 
     /**
      * Delete zero or more Positions.
@@ -2281,9 +2494,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    deleteMany<T extends PositionDeleteManyArgs>(
-      args?: SelectSubset<T, PositionDeleteManyArgs>
-    ): PrismaPromise<BatchPayload>
+    deleteMany<T extends PositionDeleteManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, PositionDeleteManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Update zero or more Positions.
@@ -2302,9 +2515,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    updateMany<T extends PositionUpdateManyArgs>(
-      args: SelectSubset<T, PositionUpdateManyArgs>
-    ): PrismaPromise<BatchPayload>
+    updateMany<T extends PositionUpdateManyArgs<ExtArgs>>(
+      args: SelectSubset<T, PositionUpdateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Create or update one Position.
@@ -2323,9 +2536,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    upsert<T extends PositionUpsertArgs>(
-      args: SelectSubset<T, PositionUpsertArgs>
-    ): CheckSelect<T, Prisma__PositionClient<Position>, Prisma__PositionClient<PositionGetPayload<T>>>
+    upsert<T extends PositionUpsertArgs<ExtArgs>>(
+      args: SelectSubset<T, PositionUpsertArgs<ExtArgs>>
+    ): Prisma__PositionClient<$Result.GetResult<Prisma.$PositionPayload<ExtArgs>, T, 'upsert'>, never, ExtArgs>
 
     /**
      * Find zero or more Positions that matches the filter.
@@ -2337,7 +2550,7 @@ export namespace Prisma {
     **/
     findRaw(
       args?: PositionFindRawArgs
-    ): PrismaPromise<JsonObject>
+    ): Prisma.PrismaPromise<JsonObject>
 
     /**
      * Perform aggregation operations on a Position.
@@ -2352,41 +2565,7 @@ export namespace Prisma {
     **/
     aggregateRaw(
       args?: PositionAggregateRawArgs
-    ): PrismaPromise<JsonObject>
-
-    /**
-     * Find one Position that matches the filter or throw
-     * `NotFoundError` if no matches were found.
-     * @param {PositionFindUniqueOrThrowArgs} args - Arguments to find a Position
-     * @example
-     * // Get one Position
-     * const position = await prisma.position.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findUniqueOrThrow<T extends PositionFindUniqueOrThrowArgs>(
-      args?: SelectSubset<T, PositionFindUniqueOrThrowArgs>
-    ): CheckSelect<T, Prisma__PositionClient<Position>, Prisma__PositionClient<PositionGetPayload<T>>>
-
-    /**
-     * Find the first Position that matches the filter or
-     * throw `NotFoundError` if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {PositionFindFirstOrThrowArgs} args - Arguments to find a Position
-     * @example
-     * // Get one Position
-     * const position = await prisma.position.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findFirstOrThrow<T extends PositionFindFirstOrThrowArgs>(
-      args?: SelectSubset<T, PositionFindFirstOrThrowArgs>
-    ): CheckSelect<T, Prisma__PositionClient<Position>, Prisma__PositionClient<PositionGetPayload<T>>>
+    ): Prisma.PrismaPromise<JsonObject>
 
     /**
      * Count the number of Positions.
@@ -2403,8 +2582,8 @@ export namespace Prisma {
     **/
     count<T extends PositionCountArgs>(
       args?: Subset<T, PositionCountArgs>,
-    ): PrismaPromise<
-      T extends _Record<'select', any>
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
           : GetScalarType<T['select'], PositionCountAggregateOutputType>
@@ -2435,7 +2614,7 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends PositionAggregateArgs>(args: Subset<T, PositionAggregateArgs>): PrismaPromise<GetPositionAggregateType<T>>
+    aggregate<T extends PositionAggregateArgs>(args: Subset<T, PositionAggregateArgs>): Prisma.PrismaPromise<GetPositionAggregateType<T>>
 
     /**
      * Group by Position.
@@ -2465,7 +2644,7 @@ export namespace Prisma {
         ? { orderBy: PositionGroupByArgs['orderBy'] }
         : { orderBy?: PositionGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends TupleToUnion<T['by']>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
       HavingFields extends GetHavingFields<T['having']>,
       HavingValid extends Has<ByFields, HavingFields>,
@@ -2512,7 +2691,11 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, PositionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPositionGroupByPayload<T> : PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, PositionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPositionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Position model
+   */
+  readonly fields: PositionFieldRefs;
   }
 
   /**
@@ -2521,220 +2704,247 @@ export namespace Prisma {
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export class Prisma__PositionClient<T> implements PrismaPromise<T> {
-    [prisma]: true;
-    private readonly _dmmf;
-    private readonly _fetcher;
-    private readonly _queryType;
-    private readonly _rootField;
-    private readonly _clientMethod;
-    private readonly _args;
-    private readonly _dataPath;
-    private readonly _errorFormat;
-    private readonly _measurePerformance?;
-    private _isList;
-    private _callsite;
-    private _requestPromise?;
-    constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
-    readonly [Symbol.toStringTag]: 'PrismaClientPromise';
+  export interface Prisma__PositionClient<T, Null = never, ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
 
-    employment<T extends EmploymentArgs = {}>(args?: Subset<T, EmploymentArgs>): CheckSelect<T, Prisma__EmploymentClient<Employment | null >, Prisma__EmploymentClient<EmploymentGetPayload<T> | null >>;
+    employment<T extends EmploymentDefaultArgs<ExtArgs> = {}>(args?: Subset<T, EmploymentDefaultArgs<ExtArgs>>): Prisma__EmploymentClient<$Result.GetResult<Prisma.$EmploymentPayload<ExtArgs>, T, 'findUniqueOrThrow'> | Null, Null, ExtArgs>;
 
-    private get _document();
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>;
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult>;
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>;
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): Promise<T>;
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>;
   }
+
+
+
+  /**
+   * Fields of the Position model
+   */ 
+  interface PositionFieldRefs {
+    readonly id: FieldRef<"Position", 'String'>
+    readonly title: FieldRef<"Position", 'String'>
+    readonly employmentId: FieldRef<"Position", 'String'>
+    readonly start: FieldRef<"Position", 'DateTime'>
+    readonly end: FieldRef<"Position", 'DateTime'>
+    readonly details: FieldRef<"Position", 'String[]'>
+    readonly technologies: FieldRef<"Position", 'String[]'>
+    readonly index: FieldRef<"Position", 'Int'>
+  }
+    
 
   // Custom InputTypes
 
   /**
-   * Position base type for findUnique actions
+   * Position findUnique
    */
-  export type PositionFindUniqueArgsBase = {
+  export type PositionFindUniqueArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Position
-     * 
-    **/
-    select?: PositionSelect | null
+     */
+    select?: PositionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: PositionInclude | null
+     */
+    include?: PositionInclude<ExtArgs> | null
     /**
      * Filter, which Position to fetch.
-     * 
-    **/
+     */
     where: PositionWhereUniqueInput
   }
 
-  /**
-   * Position: findUnique
-   */
-  export interface PositionFindUniqueArgs extends PositionFindUniqueArgsBase {
-   /**
-    * Throw an Error if query returns no results
-    * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
-    */
-    rejectOnNotFound?: RejectOnNotFound
-  }
-      
 
   /**
-   * Position base type for findFirst actions
+   * Position findUniqueOrThrow
    */
-  export type PositionFindFirstArgsBase = {
+  export type PositionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Position
-     * 
-    **/
-    select?: PositionSelect | null
+     */
+    select?: PositionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: PositionInclude | null
+     */
+    include?: PositionInclude<ExtArgs> | null
     /**
      * Filter, which Position to fetch.
-     * 
-    **/
+     */
+    where: PositionWhereUniqueInput
+  }
+
+
+  /**
+   * Position findFirst
+   */
+  export type PositionFindFirstArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Position
+     */
+    select?: PositionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: PositionInclude<ExtArgs> | null
+    /**
+     * Filter, which Position to fetch.
+     */
     where?: PositionWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Positions to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<PositionOrderByWithRelationInput>
+     */
+    orderBy?: PositionOrderByWithRelationInput | PositionOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for Positions.
-     * 
-    **/
+     */
     cursor?: PositionWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Positions from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Positions.
-     * 
-    **/
+     */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of Positions.
-     * 
-    **/
-    distinct?: Enumerable<PositionScalarFieldEnum>
+     */
+    distinct?: PositionScalarFieldEnum | PositionScalarFieldEnum[]
   }
 
-  /**
-   * Position: findFirst
-   */
-  export interface PositionFindFirstArgs extends PositionFindFirstArgsBase {
-   /**
-    * Throw an Error if query returns no results
-    * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
-    */
-    rejectOnNotFound?: RejectOnNotFound
-  }
-      
 
   /**
-   * Position findMany
+   * Position findFirstOrThrow
    */
-  export type PositionFindManyArgs = {
+  export type PositionFindFirstOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Position
-     * 
-    **/
-    select?: PositionSelect | null
+     */
+    select?: PositionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: PositionInclude | null
+     */
+    include?: PositionInclude<ExtArgs> | null
     /**
-     * Filter, which Positions to fetch.
-     * 
-    **/
+     * Filter, which Position to fetch.
+     */
     where?: PositionWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Positions to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<PositionOrderByWithRelationInput>
+     */
+    orderBy?: PositionOrderByWithRelationInput | PositionOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for listing Positions.
-     * 
-    **/
+     * Sets the position for searching for Positions.
+     */
     cursor?: PositionWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Positions from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Positions.
-     * 
-    **/
+     */
     skip?: number
-    distinct?: Enumerable<PositionScalarFieldEnum>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Positions.
+     */
+    distinct?: PositionScalarFieldEnum | PositionScalarFieldEnum[]
+  }
+
+
+  /**
+   * Position findMany
+   */
+  export type PositionFindManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Position
+     */
+    select?: PositionSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: PositionInclude<ExtArgs> | null
+    /**
+     * Filter, which Positions to fetch.
+     */
+    where?: PositionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Positions to fetch.
+     */
+    orderBy?: PositionOrderByWithRelationInput | PositionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Positions.
+     */
+    cursor?: PositionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Positions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Positions.
+     */
+    skip?: number
+    distinct?: PositionScalarFieldEnum | PositionScalarFieldEnum[]
   }
 
 
   /**
    * Position create
    */
-  export type PositionCreateArgs = {
+  export type PositionCreateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Position
-     * 
-    **/
-    select?: PositionSelect | null
+     */
+    select?: PositionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: PositionInclude | null
+     */
+    include?: PositionInclude<ExtArgs> | null
     /**
      * The data needed to create a Position.
-     * 
-    **/
+     */
     data: XOR<PositionCreateInput, PositionUncheckedCreateInput>
   }
 
@@ -2742,38 +2952,33 @@ export namespace Prisma {
   /**
    * Position createMany
    */
-  export type PositionCreateManyArgs = {
+  export type PositionCreateManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * The data used to create many Positions.
-     * 
-    **/
-    data: Enumerable<PositionCreateManyInput>
+     */
+    data: PositionCreateManyInput | PositionCreateManyInput[]
   }
 
 
   /**
    * Position update
    */
-  export type PositionUpdateArgs = {
+  export type PositionUpdateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Position
-     * 
-    **/
-    select?: PositionSelect | null
+     */
+    select?: PositionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: PositionInclude | null
+     */
+    include?: PositionInclude<ExtArgs> | null
     /**
      * The data needed to update a Position.
-     * 
-    **/
+     */
     data: XOR<PositionUpdateInput, PositionUncheckedUpdateInput>
     /**
      * Choose, which Position to update.
-     * 
-    **/
+     */
     where: PositionWhereUniqueInput
   }
 
@@ -2781,16 +2986,14 @@ export namespace Prisma {
   /**
    * Position updateMany
    */
-  export type PositionUpdateManyArgs = {
+  export type PositionUpdateManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * The data used to update Positions.
-     * 
-    **/
+     */
     data: XOR<PositionUpdateManyMutationInput, PositionUncheckedUpdateManyInput>
     /**
      * Filter which Positions to update
-     * 
-    **/
+     */
     where?: PositionWhereInput
   }
 
@@ -2798,31 +3001,26 @@ export namespace Prisma {
   /**
    * Position upsert
    */
-  export type PositionUpsertArgs = {
+  export type PositionUpsertArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Position
-     * 
-    **/
-    select?: PositionSelect | null
+     */
+    select?: PositionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: PositionInclude | null
+     */
+    include?: PositionInclude<ExtArgs> | null
     /**
      * The filter to search for the Position to update in case it exists.
-     * 
-    **/
+     */
     where: PositionWhereUniqueInput
     /**
      * In case the Position found by the `where` argument doesn't exist, create a new Position with this data.
-     * 
-    **/
+     */
     create: XOR<PositionCreateInput, PositionUncheckedCreateInput>
     /**
      * In case the Position was found with the provided `where` argument, update it with this data.
-     * 
-    **/
+     */
     update: XOR<PositionUpdateInput, PositionUncheckedUpdateInput>
   }
 
@@ -2830,21 +3028,18 @@ export namespace Prisma {
   /**
    * Position delete
    */
-  export type PositionDeleteArgs = {
+  export type PositionDeleteArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Position
-     * 
-    **/
-    select?: PositionSelect | null
+     */
+    select?: PositionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: PositionInclude | null
+     */
+    include?: PositionInclude<ExtArgs> | null
     /**
      * Filter which Position to delete.
-     * 
-    **/
+     */
     where: PositionWhereUniqueInput
   }
 
@@ -2852,11 +3047,10 @@ export namespace Prisma {
   /**
    * Position deleteMany
    */
-  export type PositionDeleteManyArgs = {
+  export type PositionDeleteManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Filter which Positions to delete
-     * 
-    **/
+     */
     where?: PositionWhereInput
   }
 
@@ -2864,16 +3058,14 @@ export namespace Prisma {
   /**
    * Position findRaw
    */
-  export type PositionFindRawArgs = {
+  export type PositionFindRawArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
-     * 
-    **/
+     */
     filter?: InputJsonValue
     /**
      * Additional options to pass to the `find` command ${@link https://docs.mongodb.com/manual/reference/command/find/#command-fields MongoDB Docs}.
-     * 
-    **/
+     */
     options?: InputJsonValue
   }
 
@@ -2881,46 +3073,30 @@ export namespace Prisma {
   /**
    * Position aggregateRaw
    */
-  export type PositionAggregateRawArgs = {
+  export type PositionAggregateRawArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
-     * 
-    **/
-    pipeline?: Array<InputJsonValue>
+     */
+    pipeline?: InputJsonValue[]
     /**
      * Additional options to pass to the `aggregate` command ${@link https://docs.mongodb.com/manual/reference/command/aggregate/#command-fields MongoDB Docs}.
-     * 
-    **/
+     */
     options?: InputJsonValue
   }
 
 
   /**
-   * Position: findUniqueOrThrow
-   */
-  export type PositionFindUniqueOrThrowArgs = PositionFindUniqueArgsBase
-      
-
-  /**
-   * Position: findFirstOrThrow
-   */
-  export type PositionFindFirstOrThrowArgs = PositionFindFirstArgsBase
-      
-
-  /**
    * Position without action
    */
-  export type PositionArgs = {
+  export type PositionDefaultArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Position
-     * 
-    **/
-    select?: PositionSelect | null
+     */
+    select?: PositionSelect<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: PositionInclude | null
+     */
+    include?: PositionInclude<ExtArgs> | null
   }
 
 
@@ -2928,7 +3104,6 @@ export namespace Prisma {
   /**
    * Model Education
    */
-
 
   export type AggregateEducation = {
     _count: EducationCountAggregateOutputType | null
@@ -2987,39 +3162,34 @@ export namespace Prisma {
     _all?: true
   }
 
-  export type EducationAggregateArgs = {
+  export type EducationAggregateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Filter which Education to aggregate.
-     * 
-    **/
+     */
     where?: EducationWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Educations to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<EducationOrderByWithRelationInput>
+     */
+    orderBy?: EducationOrderByWithRelationInput | EducationOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
-     * 
-    **/
+     */
     cursor?: EducationWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Educations from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Educations.
-     * 
-    **/
+     */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
@@ -3052,10 +3222,10 @@ export namespace Prisma {
 
 
 
-  export type EducationGroupByArgs = {
+  export type EducationGroupByArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     where?: EducationWhereInput
-    orderBy?: Enumerable<EducationOrderByWithAggregationInput>
-    by: Array<EducationScalarFieldEnum>
+    orderBy?: EducationOrderByWithAggregationInput | EducationOrderByWithAggregationInput[]
+    by: EducationScalarFieldEnum[] | EducationScalarFieldEnum
     having?: EducationScalarWhereWithAggregatesInput
     take?: number
     skip?: number
@@ -3063,7 +3233,6 @@ export namespace Prisma {
     _min?: EducationMinAggregateInputType
     _max?: EducationMaxAggregateInputType
   }
-
 
   export type EducationGroupByOutputType = {
     id: string
@@ -3076,9 +3245,9 @@ export namespace Prisma {
     _max: EducationMaxAggregateOutputType | null
   }
 
-  type GetEducationGroupByPayload<T extends EducationGroupByArgs> = PrismaPromise<
+  type GetEducationGroupByPayload<T extends EducationGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickArray<EducationGroupByOutputType, T['by']> &
+      PickEnumerable<EducationGroupByOutputType, T['by']> &
         {
           [P in ((keyof T) & (keyof EducationGroupByOutputType))]: P extends '_count'
             ? T[P] extends boolean
@@ -3090,7 +3259,15 @@ export namespace Prisma {
     >
 
 
-  export type EducationSelect = {
+  export type EducationSelect<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    link?: boolean
+    end?: boolean
+    description?: boolean
+  }, ExtArgs["result"]["education"]>
+
+  export type EducationSelectScalar = {
     id?: boolean
     title?: boolean
     link?: boolean
@@ -3098,32 +3275,30 @@ export namespace Prisma {
     description?: boolean
   }
 
-  export type EducationGetPayload<
-    S extends boolean | null | undefined | EducationArgs,
-    U = keyof S
-      > = S extends true
-        ? Education
-    : S extends undefined
-    ? never
-    : S extends EducationArgs | EducationFindManyArgs
-    ?'include' extends U
-    ? Education 
-    : 'select' extends U
-    ? {
-    [P in TrueKeys<S['select']>]:
-    P extends keyof Education ? Education[P] : never
-  } 
-    : Education
-  : Education
+
+  export type $EducationPayload<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    name: "Education"
+    objects: {}
+    scalars: $Extensions.GetResult<{
+      id: string
+      title: string | null
+      link: string | null
+      end: Date | null
+      description: string | null
+    }, ExtArgs["result"]["education"]>
+    composites: {}
+  }
 
 
-  type EducationCountArgs = Merge<
+  type EducationGetPayload<S extends boolean | null | undefined | EducationDefaultArgs> = $Result.GetResult<Prisma.$EducationPayload, S>
+
+  type EducationCountArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = 
     Omit<EducationFindManyArgs, 'select' | 'include'> & {
       select?: EducationCountAggregateInputType | true
     }
-  >
 
-  export interface EducationDelegate<GlobalRejectSettings> {
+  export interface EducationDelegate<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Education'], meta: { name: 'Education' } }
     /**
      * Find zero or one Education that matches the filter.
      * @param {EducationFindUniqueArgs} args - Arguments to find a Education
@@ -3135,9 +3310,25 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findUnique<T extends EducationFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args: SelectSubset<T, EducationFindUniqueArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'Education'> extends True ? CheckSelect<T, Prisma__EducationClient<Education>, Prisma__EducationClient<EducationGetPayload<T>>> : CheckSelect<T, Prisma__EducationClient<Education | null >, Prisma__EducationClient<EducationGetPayload<T> | null >>
+    findUnique<T extends EducationFindUniqueArgs<ExtArgs>>(
+      args: SelectSubset<T, EducationFindUniqueArgs<ExtArgs>>
+    ): Prisma__EducationClient<$Result.GetResult<Prisma.$EducationPayload<ExtArgs>, T, 'findUnique'> | null, null, ExtArgs>
+
+    /**
+     * Find one Education that matches the filter or throw an error  with `error.code='P2025'` 
+     *     if no matches were found.
+     * @param {EducationFindUniqueOrThrowArgs} args - Arguments to find a Education
+     * @example
+     * // Get one Education
+     * const education = await prisma.education.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends EducationFindUniqueOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, EducationFindUniqueOrThrowArgs<ExtArgs>>
+    ): Prisma__EducationClient<$Result.GetResult<Prisma.$EducationPayload<ExtArgs>, T, 'findUniqueOrThrow'>, never, ExtArgs>
 
     /**
      * Find the first Education that matches the filter.
@@ -3152,9 +3343,27 @@ export namespace Prisma {
      *   }
      * })
     **/
-    findFirst<T extends EducationFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args?: SelectSubset<T, EducationFindFirstArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'Education'> extends True ? CheckSelect<T, Prisma__EducationClient<Education>, Prisma__EducationClient<EducationGetPayload<T>>> : CheckSelect<T, Prisma__EducationClient<Education | null >, Prisma__EducationClient<EducationGetPayload<T> | null >>
+    findFirst<T extends EducationFindFirstArgs<ExtArgs>>(
+      args?: SelectSubset<T, EducationFindFirstArgs<ExtArgs>>
+    ): Prisma__EducationClient<$Result.GetResult<Prisma.$EducationPayload<ExtArgs>, T, 'findFirst'> | null, null, ExtArgs>
+
+    /**
+     * Find the first Education that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EducationFindFirstOrThrowArgs} args - Arguments to find a Education
+     * @example
+     * // Get one Education
+     * const education = await prisma.education.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends EducationFindFirstOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, EducationFindFirstOrThrowArgs<ExtArgs>>
+    ): Prisma__EducationClient<$Result.GetResult<Prisma.$EducationPayload<ExtArgs>, T, 'findFirstOrThrow'>, never, ExtArgs>
 
     /**
      * Find zero or more Educations that matches the filter.
@@ -3172,9 +3381,9 @@ export namespace Prisma {
      * const educationWithIdOnly = await prisma.education.findMany({ select: { id: true } })
      * 
     **/
-    findMany<T extends EducationFindManyArgs>(
-      args?: SelectSubset<T, EducationFindManyArgs>
-    ): CheckSelect<T, PrismaPromise<Array<Education>>, PrismaPromise<Array<EducationGetPayload<T>>>>
+    findMany<T extends EducationFindManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, EducationFindManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EducationPayload<ExtArgs>, T, 'findMany'>>
 
     /**
      * Create a Education.
@@ -3188,9 +3397,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    create<T extends EducationCreateArgs>(
-      args: SelectSubset<T, EducationCreateArgs>
-    ): CheckSelect<T, Prisma__EducationClient<Education>, Prisma__EducationClient<EducationGetPayload<T>>>
+    create<T extends EducationCreateArgs<ExtArgs>>(
+      args: SelectSubset<T, EducationCreateArgs<ExtArgs>>
+    ): Prisma__EducationClient<$Result.GetResult<Prisma.$EducationPayload<ExtArgs>, T, 'create'>, never, ExtArgs>
 
     /**
      * Create many Educations.
@@ -3204,9 +3413,9 @@ export namespace Prisma {
      *     })
      *     
     **/
-    createMany<T extends EducationCreateManyArgs>(
-      args?: SelectSubset<T, EducationCreateManyArgs>
-    ): PrismaPromise<BatchPayload>
+    createMany<T extends EducationCreateManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, EducationCreateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Delete a Education.
@@ -3220,9 +3429,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    delete<T extends EducationDeleteArgs>(
-      args: SelectSubset<T, EducationDeleteArgs>
-    ): CheckSelect<T, Prisma__EducationClient<Education>, Prisma__EducationClient<EducationGetPayload<T>>>
+    delete<T extends EducationDeleteArgs<ExtArgs>>(
+      args: SelectSubset<T, EducationDeleteArgs<ExtArgs>>
+    ): Prisma__EducationClient<$Result.GetResult<Prisma.$EducationPayload<ExtArgs>, T, 'delete'>, never, ExtArgs>
 
     /**
      * Update one Education.
@@ -3239,9 +3448,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    update<T extends EducationUpdateArgs>(
-      args: SelectSubset<T, EducationUpdateArgs>
-    ): CheckSelect<T, Prisma__EducationClient<Education>, Prisma__EducationClient<EducationGetPayload<T>>>
+    update<T extends EducationUpdateArgs<ExtArgs>>(
+      args: SelectSubset<T, EducationUpdateArgs<ExtArgs>>
+    ): Prisma__EducationClient<$Result.GetResult<Prisma.$EducationPayload<ExtArgs>, T, 'update'>, never, ExtArgs>
 
     /**
      * Delete zero or more Educations.
@@ -3255,9 +3464,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    deleteMany<T extends EducationDeleteManyArgs>(
-      args?: SelectSubset<T, EducationDeleteManyArgs>
-    ): PrismaPromise<BatchPayload>
+    deleteMany<T extends EducationDeleteManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, EducationDeleteManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Update zero or more Educations.
@@ -3276,9 +3485,9 @@ export namespace Prisma {
      * })
      * 
     **/
-    updateMany<T extends EducationUpdateManyArgs>(
-      args: SelectSubset<T, EducationUpdateManyArgs>
-    ): PrismaPromise<BatchPayload>
+    updateMany<T extends EducationUpdateManyArgs<ExtArgs>>(
+      args: SelectSubset<T, EducationUpdateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Create or update one Education.
@@ -3297,9 +3506,9 @@ export namespace Prisma {
      *   }
      * })
     **/
-    upsert<T extends EducationUpsertArgs>(
-      args: SelectSubset<T, EducationUpsertArgs>
-    ): CheckSelect<T, Prisma__EducationClient<Education>, Prisma__EducationClient<EducationGetPayload<T>>>
+    upsert<T extends EducationUpsertArgs<ExtArgs>>(
+      args: SelectSubset<T, EducationUpsertArgs<ExtArgs>>
+    ): Prisma__EducationClient<$Result.GetResult<Prisma.$EducationPayload<ExtArgs>, T, 'upsert'>, never, ExtArgs>
 
     /**
      * Find zero or more Educations that matches the filter.
@@ -3311,7 +3520,7 @@ export namespace Prisma {
     **/
     findRaw(
       args?: EducationFindRawArgs
-    ): PrismaPromise<JsonObject>
+    ): Prisma.PrismaPromise<JsonObject>
 
     /**
      * Perform aggregation operations on a Education.
@@ -3326,41 +3535,7 @@ export namespace Prisma {
     **/
     aggregateRaw(
       args?: EducationAggregateRawArgs
-    ): PrismaPromise<JsonObject>
-
-    /**
-     * Find one Education that matches the filter or throw
-     * `NotFoundError` if no matches were found.
-     * @param {EducationFindUniqueOrThrowArgs} args - Arguments to find a Education
-     * @example
-     * // Get one Education
-     * const education = await prisma.education.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findUniqueOrThrow<T extends EducationFindUniqueOrThrowArgs>(
-      args?: SelectSubset<T, EducationFindUniqueOrThrowArgs>
-    ): CheckSelect<T, Prisma__EducationClient<Education>, Prisma__EducationClient<EducationGetPayload<T>>>
-
-    /**
-     * Find the first Education that matches the filter or
-     * throw `NotFoundError` if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {EducationFindFirstOrThrowArgs} args - Arguments to find a Education
-     * @example
-     * // Get one Education
-     * const education = await prisma.education.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findFirstOrThrow<T extends EducationFindFirstOrThrowArgs>(
-      args?: SelectSubset<T, EducationFindFirstOrThrowArgs>
-    ): CheckSelect<T, Prisma__EducationClient<Education>, Prisma__EducationClient<EducationGetPayload<T>>>
+    ): Prisma.PrismaPromise<JsonObject>
 
     /**
      * Count the number of Educations.
@@ -3377,8 +3552,8 @@ export namespace Prisma {
     **/
     count<T extends EducationCountArgs>(
       args?: Subset<T, EducationCountArgs>,
-    ): PrismaPromise<
-      T extends _Record<'select', any>
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
           : GetScalarType<T['select'], EducationCountAggregateOutputType>
@@ -3409,7 +3584,7 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends EducationAggregateArgs>(args: Subset<T, EducationAggregateArgs>): PrismaPromise<GetEducationAggregateType<T>>
+    aggregate<T extends EducationAggregateArgs>(args: Subset<T, EducationAggregateArgs>): Prisma.PrismaPromise<GetEducationAggregateType<T>>
 
     /**
      * Group by Education.
@@ -3439,7 +3614,7 @@ export namespace Prisma {
         ? { orderBy: EducationGroupByArgs['orderBy'] }
         : { orderBy?: EducationGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends TupleToUnion<T['by']>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
       HavingFields extends GetHavingFields<T['having']>,
       HavingValid extends Has<ByFields, HavingFields>,
@@ -3486,7 +3661,11 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, EducationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEducationGroupByPayload<T> : PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, EducationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEducationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Education model
+   */
+  readonly fields: EducationFieldRefs;
   }
 
   /**
@@ -3495,233 +3674,249 @@ export namespace Prisma {
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export class Prisma__EducationClient<T> implements PrismaPromise<T> {
-    [prisma]: true;
-    private readonly _dmmf;
-    private readonly _fetcher;
-    private readonly _queryType;
-    private readonly _rootField;
-    private readonly _clientMethod;
-    private readonly _args;
-    private readonly _dataPath;
-    private readonly _errorFormat;
-    private readonly _measurePerformance?;
-    private _isList;
-    private _callsite;
-    private _requestPromise?;
-    constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
-    readonly [Symbol.toStringTag]: 'PrismaClientPromise';
+  export interface Prisma__EducationClient<T, Null = never, ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
 
 
-    private get _document();
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>;
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult>;
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>;
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): Promise<T>;
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>;
   }
+
+
+
+  /**
+   * Fields of the Education model
+   */ 
+  interface EducationFieldRefs {
+    readonly id: FieldRef<"Education", 'String'>
+    readonly title: FieldRef<"Education", 'String'>
+    readonly link: FieldRef<"Education", 'String'>
+    readonly end: FieldRef<"Education", 'DateTime'>
+    readonly description: FieldRef<"Education", 'String'>
+  }
+    
 
   // Custom InputTypes
 
   /**
-   * Education base type for findUnique actions
+   * Education findUnique
    */
-  export type EducationFindUniqueArgsBase = {
+  export type EducationFindUniqueArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Education
-     * 
-    **/
-    select?: EducationSelect | null
+     */
+    select?: EducationSelect<ExtArgs> | null
     /**
      * Filter, which Education to fetch.
-     * 
-    **/
+     */
     where: EducationWhereUniqueInput
   }
 
-  /**
-   * Education: findUnique
-   */
-  export interface EducationFindUniqueArgs extends EducationFindUniqueArgsBase {
-   /**
-    * Throw an Error if query returns no results
-    * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
-    */
-    rejectOnNotFound?: RejectOnNotFound
-  }
-      
 
   /**
-   * Education base type for findFirst actions
+   * Education findUniqueOrThrow
    */
-  export type EducationFindFirstArgsBase = {
+  export type EducationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Education
-     * 
-    **/
-    select?: EducationSelect | null
+     */
+    select?: EducationSelect<ExtArgs> | null
     /**
      * Filter, which Education to fetch.
-     * 
-    **/
+     */
+    where: EducationWhereUniqueInput
+  }
+
+
+  /**
+   * Education findFirst
+   */
+  export type EducationFindFirstArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Education
+     */
+    select?: EducationSelect<ExtArgs> | null
+    /**
+     * Filter, which Education to fetch.
+     */
     where?: EducationWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Educations to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<EducationOrderByWithRelationInput>
+     */
+    orderBy?: EducationOrderByWithRelationInput | EducationOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the position for searching for Educations.
-     * 
-    **/
+     */
     cursor?: EducationWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Educations from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Educations.
-     * 
-    **/
+     */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
      * Filter by unique combinations of Educations.
-     * 
-    **/
-    distinct?: Enumerable<EducationScalarFieldEnum>
+     */
+    distinct?: EducationScalarFieldEnum | EducationScalarFieldEnum[]
   }
 
-  /**
-   * Education: findFirst
-   */
-  export interface EducationFindFirstArgs extends EducationFindFirstArgsBase {
-   /**
-    * Throw an Error if query returns no results
-    * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
-    */
-    rejectOnNotFound?: RejectOnNotFound
-  }
-      
 
   /**
-   * Education findMany
+   * Education findFirstOrThrow
    */
-  export type EducationFindManyArgs = {
+  export type EducationFindFirstOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Education
-     * 
-    **/
-    select?: EducationSelect | null
+     */
+    select?: EducationSelect<ExtArgs> | null
     /**
-     * Filter, which Educations to fetch.
-     * 
-    **/
+     * Filter, which Education to fetch.
+     */
     where?: EducationWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
      * Determine the order of Educations to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<EducationOrderByWithRelationInput>
+     */
+    orderBy?: EducationOrderByWithRelationInput | EducationOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for listing Educations.
-     * 
-    **/
+     * Sets the position for searching for Educations.
+     */
     cursor?: EducationWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Take `±n` Educations from the position of the cursor.
-     * 
-    **/
+     */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
      * Skip the first `n` Educations.
-     * 
-    **/
+     */
     skip?: number
-    distinct?: Enumerable<EducationScalarFieldEnum>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Educations.
+     */
+    distinct?: EducationScalarFieldEnum | EducationScalarFieldEnum[]
+  }
+
+
+  /**
+   * Education findMany
+   */
+  export type EducationFindManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Education
+     */
+    select?: EducationSelect<ExtArgs> | null
+    /**
+     * Filter, which Educations to fetch.
+     */
+    where?: EducationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Educations to fetch.
+     */
+    orderBy?: EducationOrderByWithRelationInput | EducationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Educations.
+     */
+    cursor?: EducationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Educations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Educations.
+     */
+    skip?: number
+    distinct?: EducationScalarFieldEnum | EducationScalarFieldEnum[]
   }
 
 
   /**
    * Education create
    */
-  export type EducationCreateArgs = {
+  export type EducationCreateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Education
-     * 
-    **/
-    select?: EducationSelect | null
+     */
+    select?: EducationSelect<ExtArgs> | null
     /**
      * The data needed to create a Education.
-     * 
-    **/
-    data: XOR<EducationCreateInput, EducationUncheckedCreateInput>
+     */
+    data?: XOR<EducationCreateInput, EducationUncheckedCreateInput>
   }
 
 
   /**
    * Education createMany
    */
-  export type EducationCreateManyArgs = {
+  export type EducationCreateManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * The data used to create many Educations.
-     * 
-    **/
-    data: Enumerable<EducationCreateManyInput>
+     */
+    data: EducationCreateManyInput | EducationCreateManyInput[]
   }
 
 
   /**
    * Education update
    */
-  export type EducationUpdateArgs = {
+  export type EducationUpdateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Education
-     * 
-    **/
-    select?: EducationSelect | null
+     */
+    select?: EducationSelect<ExtArgs> | null
     /**
      * The data needed to update a Education.
-     * 
-    **/
+     */
     data: XOR<EducationUpdateInput, EducationUncheckedUpdateInput>
     /**
      * Choose, which Education to update.
-     * 
-    **/
+     */
     where: EducationWhereUniqueInput
   }
 
@@ -3729,16 +3924,14 @@ export namespace Prisma {
   /**
    * Education updateMany
    */
-  export type EducationUpdateManyArgs = {
+  export type EducationUpdateManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * The data used to update Educations.
-     * 
-    **/
+     */
     data: XOR<EducationUpdateManyMutationInput, EducationUncheckedUpdateManyInput>
     /**
      * Filter which Educations to update
-     * 
-    **/
+     */
     where?: EducationWhereInput
   }
 
@@ -3746,26 +3939,22 @@ export namespace Prisma {
   /**
    * Education upsert
    */
-  export type EducationUpsertArgs = {
+  export type EducationUpsertArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Education
-     * 
-    **/
-    select?: EducationSelect | null
+     */
+    select?: EducationSelect<ExtArgs> | null
     /**
      * The filter to search for the Education to update in case it exists.
-     * 
-    **/
+     */
     where: EducationWhereUniqueInput
     /**
      * In case the Education found by the `where` argument doesn't exist, create a new Education with this data.
-     * 
-    **/
+     */
     create: XOR<EducationCreateInput, EducationUncheckedCreateInput>
     /**
      * In case the Education was found with the provided `where` argument, update it with this data.
-     * 
-    **/
+     */
     update: XOR<EducationUpdateInput, EducationUncheckedUpdateInput>
   }
 
@@ -3773,16 +3962,14 @@ export namespace Prisma {
   /**
    * Education delete
    */
-  export type EducationDeleteArgs = {
+  export type EducationDeleteArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Education
-     * 
-    **/
-    select?: EducationSelect | null
+     */
+    select?: EducationSelect<ExtArgs> | null
     /**
      * Filter which Education to delete.
-     * 
-    **/
+     */
     where: EducationWhereUniqueInput
   }
 
@@ -3790,11 +3977,10 @@ export namespace Prisma {
   /**
    * Education deleteMany
    */
-  export type EducationDeleteManyArgs = {
+  export type EducationDeleteManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Filter which Educations to delete
-     * 
-    **/
+     */
     where?: EducationWhereInput
   }
 
@@ -3802,16 +3988,14 @@ export namespace Prisma {
   /**
    * Education findRaw
    */
-  export type EducationFindRawArgs = {
+  export type EducationFindRawArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
-     * 
-    **/
+     */
     filter?: InputJsonValue
     /**
      * Additional options to pass to the `find` command ${@link https://docs.mongodb.com/manual/reference/command/find/#command-fields MongoDB Docs}.
-     * 
-    **/
+     */
     options?: InputJsonValue
   }
 
@@ -3819,41 +4003,26 @@ export namespace Prisma {
   /**
    * Education aggregateRaw
    */
-  export type EducationAggregateRawArgs = {
+  export type EducationAggregateRawArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
-     * 
-    **/
-    pipeline?: Array<InputJsonValue>
+     */
+    pipeline?: InputJsonValue[]
     /**
      * Additional options to pass to the `aggregate` command ${@link https://docs.mongodb.com/manual/reference/command/aggregate/#command-fields MongoDB Docs}.
-     * 
-    **/
+     */
     options?: InputJsonValue
   }
 
 
   /**
-   * Education: findUniqueOrThrow
-   */
-  export type EducationFindUniqueOrThrowArgs = EducationFindUniqueArgsBase
-      
-
-  /**
-   * Education: findFirstOrThrow
-   */
-  export type EducationFindFirstOrThrowArgs = EducationFindFirstArgsBase
-      
-
-  /**
    * Education without action
    */
-  export type EducationArgs = {
+  export type EducationDefaultArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Education
-     * 
-    **/
-    select?: EducationSelect | null
+     */
+    select?: EducationSelect<ExtArgs> | null
   }
 
 
@@ -3861,20 +4030,6 @@ export namespace Prisma {
   /**
    * Enums
    */
-
-  // Based on
-  // https://github.com/microsoft/TypeScript/issues/3192#issuecomment-261720275
-
-  export const EducationScalarFieldEnum: {
-    id: 'id',
-    title: 'title',
-    link: 'link',
-    end: 'end',
-    description: 'description'
-  };
-
-  export type EducationScalarFieldEnum = (typeof EducationScalarFieldEnum)[keyof typeof EducationScalarFieldEnum]
-
 
   export const EmploymentScalarFieldEnum: {
     id: 'id',
@@ -3901,12 +4056,15 @@ export namespace Prisma {
   export type PositionScalarFieldEnum = (typeof PositionScalarFieldEnum)[keyof typeof PositionScalarFieldEnum]
 
 
-  export const QueryMode: {
-    default: 'default',
-    insensitive: 'insensitive'
+  export const EducationScalarFieldEnum: {
+    id: 'id',
+    title: 'title',
+    link: 'link',
+    end: 'end',
+    description: 'description'
   };
 
-  export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+  export type EducationScalarFieldEnum = (typeof EducationScalarFieldEnum)[keyof typeof EducationScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -3917,21 +4075,88 @@ export namespace Prisma {
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+  export const QueryMode: {
+    default: 'default',
+    insensitive: 'insensitive'
+  };
+
+  export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+  /**
+   * Field references 
+   */
+
+
+  /**
+   * Reference to a field of type 'String'
+   */
+  export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String'>
+    
+
+
+  /**
+   * Reference to a field of type 'String[]'
+   */
+  export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int'
+   */
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int[]'
+   */
+  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'DateTime'
+   */
+  export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
+    
+
+
+  /**
+   * Reference to a field of type 'DateTime[]'
+   */
+  export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
   /**
    * Deep Input Types
    */
 
 
   export type EmploymentWhereInput = {
-    AND?: Enumerable<EmploymentWhereInput>
-    OR?: Enumerable<EmploymentWhereInput>
-    NOT?: Enumerable<EmploymentWhereInput>
-    id?: StringFilter | string
-    company?: StringNullableFilter | string | null
-    companyLink?: StringNullableFilter | string | null
-    descriptor?: StringNullableFilter | string | null
+    AND?: EmploymentWhereInput | EmploymentWhereInput[]
+    OR?: EmploymentWhereInput[]
+    NOT?: EmploymentWhereInput | EmploymentWhereInput[]
+    id?: StringFilter<"Employment"> | string
+    company?: StringNullableFilter<"Employment"> | string | null
+    companyLink?: StringNullableFilter<"Employment"> | string | null
+    descriptor?: StringNullableFilter<"Employment"> | string | null
+    index?: IntNullableFilter<"Employment"> | number | null
     positions?: PositionListRelationFilter
-    index?: IntNullableFilter | number | null
   }
 
   export type EmploymentOrderByWithRelationInput = {
@@ -3939,13 +4164,21 @@ export namespace Prisma {
     company?: SortOrder
     companyLink?: SortOrder
     descriptor?: SortOrder
-    positions?: PositionOrderByRelationAggregateInput
     index?: SortOrder
+    positions?: PositionOrderByRelationAggregateInput
   }
 
-  export type EmploymentWhereUniqueInput = {
+  export type EmploymentWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-  }
+    AND?: EmploymentWhereInput | EmploymentWhereInput[]
+    OR?: EmploymentWhereInput[]
+    NOT?: EmploymentWhereInput | EmploymentWhereInput[]
+    company?: StringNullableFilter<"Employment"> | string | null
+    companyLink?: StringNullableFilter<"Employment"> | string | null
+    descriptor?: StringNullableFilter<"Employment"> | string | null
+    index?: IntNullableFilter<"Employment"> | number | null
+    positions?: PositionListRelationFilter
+  }, "id">
 
   export type EmploymentOrderByWithAggregationInput = {
     id?: SortOrder
@@ -3961,46 +4194,57 @@ export namespace Prisma {
   }
 
   export type EmploymentScalarWhereWithAggregatesInput = {
-    AND?: Enumerable<EmploymentScalarWhereWithAggregatesInput>
-    OR?: Enumerable<EmploymentScalarWhereWithAggregatesInput>
-    NOT?: Enumerable<EmploymentScalarWhereWithAggregatesInput>
-    id?: StringWithAggregatesFilter | string
-    company?: StringNullableWithAggregatesFilter | string | null
-    companyLink?: StringNullableWithAggregatesFilter | string | null
-    descriptor?: StringNullableWithAggregatesFilter | string | null
-    index?: IntNullableWithAggregatesFilter | number | null
+    AND?: EmploymentScalarWhereWithAggregatesInput | EmploymentScalarWhereWithAggregatesInput[]
+    OR?: EmploymentScalarWhereWithAggregatesInput[]
+    NOT?: EmploymentScalarWhereWithAggregatesInput | EmploymentScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Employment"> | string
+    company?: StringNullableWithAggregatesFilter<"Employment"> | string | null
+    companyLink?: StringNullableWithAggregatesFilter<"Employment"> | string | null
+    descriptor?: StringNullableWithAggregatesFilter<"Employment"> | string | null
+    index?: IntNullableWithAggregatesFilter<"Employment"> | number | null
   }
 
   export type PositionWhereInput = {
-    AND?: Enumerable<PositionWhereInput>
-    OR?: Enumerable<PositionWhereInput>
-    NOT?: Enumerable<PositionWhereInput>
-    id?: StringFilter | string
-    title?: StringNullableFilter | string | null
+    AND?: PositionWhereInput | PositionWhereInput[]
+    OR?: PositionWhereInput[]
+    NOT?: PositionWhereInput | PositionWhereInput[]
+    id?: StringFilter<"Position"> | string
+    title?: StringNullableFilter<"Position"> | string | null
+    employmentId?: StringFilter<"Position"> | string
+    start?: DateTimeNullableFilter<"Position"> | Date | string | null
+    end?: DateTimeNullableFilter<"Position"> | Date | string | null
+    details?: StringNullableListFilter<"Position">
+    technologies?: StringNullableListFilter<"Position">
+    index?: IntNullableFilter<"Position"> | number | null
     employment?: XOR<EmploymentRelationFilter, EmploymentWhereInput>
-    employmentId?: StringFilter | string
-    start?: DateTimeNullableFilter | Date | string | null
-    end?: DateTimeNullableFilter | Date | string | null
-    details?: StringNullableListFilter
-    technologies?: StringNullableListFilter
-    index?: IntNullableFilter | number | null
   }
 
   export type PositionOrderByWithRelationInput = {
     id?: SortOrder
     title?: SortOrder
-    employment?: EmploymentOrderByWithRelationInput
     employmentId?: SortOrder
     start?: SortOrder
     end?: SortOrder
     details?: SortOrder
     technologies?: SortOrder
     index?: SortOrder
+    employment?: EmploymentOrderByWithRelationInput
   }
 
-  export type PositionWhereUniqueInput = {
+  export type PositionWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-  }
+    AND?: PositionWhereInput | PositionWhereInput[]
+    OR?: PositionWhereInput[]
+    NOT?: PositionWhereInput | PositionWhereInput[]
+    title?: StringNullableFilter<"Position"> | string | null
+    employmentId?: StringFilter<"Position"> | string
+    start?: DateTimeNullableFilter<"Position"> | Date | string | null
+    end?: DateTimeNullableFilter<"Position"> | Date | string | null
+    details?: StringNullableListFilter<"Position">
+    technologies?: StringNullableListFilter<"Position">
+    index?: IntNullableFilter<"Position"> | number | null
+    employment?: XOR<EmploymentRelationFilter, EmploymentWhereInput>
+  }, "id">
 
   export type PositionOrderByWithAggregationInput = {
     id?: SortOrder
@@ -4019,28 +4263,28 @@ export namespace Prisma {
   }
 
   export type PositionScalarWhereWithAggregatesInput = {
-    AND?: Enumerable<PositionScalarWhereWithAggregatesInput>
-    OR?: Enumerable<PositionScalarWhereWithAggregatesInput>
-    NOT?: Enumerable<PositionScalarWhereWithAggregatesInput>
-    id?: StringWithAggregatesFilter | string
-    title?: StringNullableWithAggregatesFilter | string | null
-    employmentId?: StringWithAggregatesFilter | string
-    start?: DateTimeNullableWithAggregatesFilter | Date | string | null
-    end?: DateTimeNullableWithAggregatesFilter | Date | string | null
-    details?: StringNullableListFilter
-    technologies?: StringNullableListFilter
-    index?: IntNullableWithAggregatesFilter | number | null
+    AND?: PositionScalarWhereWithAggregatesInput | PositionScalarWhereWithAggregatesInput[]
+    OR?: PositionScalarWhereWithAggregatesInput[]
+    NOT?: PositionScalarWhereWithAggregatesInput | PositionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Position"> | string
+    title?: StringNullableWithAggregatesFilter<"Position"> | string | null
+    employmentId?: StringWithAggregatesFilter<"Position"> | string
+    start?: DateTimeNullableWithAggregatesFilter<"Position"> | Date | string | null
+    end?: DateTimeNullableWithAggregatesFilter<"Position"> | Date | string | null
+    details?: StringNullableListFilter<"Position">
+    technologies?: StringNullableListFilter<"Position">
+    index?: IntNullableWithAggregatesFilter<"Position"> | number | null
   }
 
   export type EducationWhereInput = {
-    AND?: Enumerable<EducationWhereInput>
-    OR?: Enumerable<EducationWhereInput>
-    NOT?: Enumerable<EducationWhereInput>
-    id?: StringFilter | string
-    title?: StringNullableFilter | string | null
-    link?: StringNullableFilter | string | null
-    end?: DateTimeNullableFilter | Date | string | null
-    description?: StringNullableFilter | string | null
+    AND?: EducationWhereInput | EducationWhereInput[]
+    OR?: EducationWhereInput[]
+    NOT?: EducationWhereInput | EducationWhereInput[]
+    id?: StringFilter<"Education"> | string
+    title?: StringNullableFilter<"Education"> | string | null
+    link?: StringNullableFilter<"Education"> | string | null
+    end?: DateTimeNullableFilter<"Education"> | Date | string | null
+    description?: StringNullableFilter<"Education"> | string | null
   }
 
   export type EducationOrderByWithRelationInput = {
@@ -4051,9 +4295,16 @@ export namespace Prisma {
     description?: SortOrder
   }
 
-  export type EducationWhereUniqueInput = {
+  export type EducationWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-  }
+    AND?: EducationWhereInput | EducationWhereInput[]
+    OR?: EducationWhereInput[]
+    NOT?: EducationWhereInput | EducationWhereInput[]
+    title?: StringNullableFilter<"Education"> | string | null
+    link?: StringNullableFilter<"Education"> | string | null
+    end?: DateTimeNullableFilter<"Education"> | Date | string | null
+    description?: StringNullableFilter<"Education"> | string | null
+  }, "id">
 
   export type EducationOrderByWithAggregationInput = {
     id?: SortOrder
@@ -4067,14 +4318,14 @@ export namespace Prisma {
   }
 
   export type EducationScalarWhereWithAggregatesInput = {
-    AND?: Enumerable<EducationScalarWhereWithAggregatesInput>
-    OR?: Enumerable<EducationScalarWhereWithAggregatesInput>
-    NOT?: Enumerable<EducationScalarWhereWithAggregatesInput>
-    id?: StringWithAggregatesFilter | string
-    title?: StringNullableWithAggregatesFilter | string | null
-    link?: StringNullableWithAggregatesFilter | string | null
-    end?: DateTimeNullableWithAggregatesFilter | Date | string | null
-    description?: StringNullableWithAggregatesFilter | string | null
+    AND?: EducationScalarWhereWithAggregatesInput | EducationScalarWhereWithAggregatesInput[]
+    OR?: EducationScalarWhereWithAggregatesInput[]
+    NOT?: EducationScalarWhereWithAggregatesInput | EducationScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Education"> | string
+    title?: StringNullableWithAggregatesFilter<"Education"> | string | null
+    link?: StringNullableWithAggregatesFilter<"Education"> | string | null
+    end?: DateTimeNullableWithAggregatesFilter<"Education"> | Date | string | null
+    description?: StringNullableWithAggregatesFilter<"Education"> | string | null
   }
 
   export type EmploymentCreateInput = {
@@ -4082,8 +4333,8 @@ export namespace Prisma {
     company?: string | null
     companyLink?: string | null
     descriptor?: string | null
-    positions?: PositionCreateNestedManyWithoutEmploymentInput
     index?: number | null
+    positions?: PositionCreateNestedManyWithoutEmploymentInput
   }
 
   export type EmploymentUncheckedCreateInput = {
@@ -4091,24 +4342,24 @@ export namespace Prisma {
     company?: string | null
     companyLink?: string | null
     descriptor?: string | null
-    positions?: PositionUncheckedCreateNestedManyWithoutEmploymentInput
     index?: number | null
+    positions?: PositionUncheckedCreateNestedManyWithoutEmploymentInput
   }
 
   export type EmploymentUpdateInput = {
     company?: NullableStringFieldUpdateOperationsInput | string | null
     companyLink?: NullableStringFieldUpdateOperationsInput | string | null
     descriptor?: NullableStringFieldUpdateOperationsInput | string | null
-    positions?: PositionUpdateManyWithoutEmploymentNestedInput
     index?: NullableIntFieldUpdateOperationsInput | number | null
+    positions?: PositionUpdateManyWithoutEmploymentNestedInput
   }
 
   export type EmploymentUncheckedUpdateInput = {
     company?: NullableStringFieldUpdateOperationsInput | string | null
     companyLink?: NullableStringFieldUpdateOperationsInput | string | null
     descriptor?: NullableStringFieldUpdateOperationsInput | string | null
-    positions?: PositionUncheckedUpdateManyWithoutEmploymentNestedInput
     index?: NullableIntFieldUpdateOperationsInput | number | null
+    positions?: PositionUncheckedUpdateManyWithoutEmploymentNestedInput
   }
 
   export type EmploymentCreateManyInput = {
@@ -4136,12 +4387,12 @@ export namespace Prisma {
   export type PositionCreateInput = {
     id?: string
     title?: string | null
-    employment: EmploymentCreateNestedOneWithoutPositionsInput
     start?: Date | string | null
     end?: Date | string | null
-    details?: PositionCreatedetailsInput | Enumerable<string>
-    technologies?: PositionCreatetechnologiesInput | Enumerable<string>
+    details?: PositionCreatedetailsInput | string[]
+    technologies?: PositionCreatetechnologiesInput | string[]
     index?: number | null
+    employment: EmploymentCreateNestedOneWithoutPositionsInput
   }
 
   export type PositionUncheckedCreateInput = {
@@ -4150,19 +4401,19 @@ export namespace Prisma {
     employmentId: string
     start?: Date | string | null
     end?: Date | string | null
-    details?: PositionCreatedetailsInput | Enumerable<string>
-    technologies?: PositionCreatetechnologiesInput | Enumerable<string>
+    details?: PositionCreatedetailsInput | string[]
+    technologies?: PositionCreatetechnologiesInput | string[]
     index?: number | null
   }
 
   export type PositionUpdateInput = {
     title?: NullableStringFieldUpdateOperationsInput | string | null
-    employment?: EmploymentUpdateOneRequiredWithoutPositionsNestedInput
     start?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     end?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    details?: PositionUpdatedetailsInput | Enumerable<string>
-    technologies?: PositionUpdatetechnologiesInput | Enumerable<string>
+    details?: PositionUpdatedetailsInput | string[]
+    technologies?: PositionUpdatetechnologiesInput | string[]
     index?: NullableIntFieldUpdateOperationsInput | number | null
+    employment?: EmploymentUpdateOneRequiredWithoutPositionsNestedInput
   }
 
   export type PositionUncheckedUpdateInput = {
@@ -4170,8 +4421,8 @@ export namespace Prisma {
     employmentId?: StringFieldUpdateOperationsInput | string
     start?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     end?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    details?: PositionUpdatedetailsInput | Enumerable<string>
-    technologies?: PositionUpdatetechnologiesInput | Enumerable<string>
+    details?: PositionUpdatedetailsInput | string[]
+    technologies?: PositionUpdatetechnologiesInput | string[]
     index?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
@@ -4181,8 +4432,8 @@ export namespace Prisma {
     employmentId: string
     start?: Date | string | null
     end?: Date | string | null
-    details?: PositionCreatedetailsInput | Enumerable<string>
-    technologies?: PositionCreatetechnologiesInput | Enumerable<string>
+    details?: PositionCreatedetailsInput | string[]
+    technologies?: PositionCreatetechnologiesInput | string[]
     index?: number | null
   }
 
@@ -4190,8 +4441,8 @@ export namespace Prisma {
     title?: NullableStringFieldUpdateOperationsInput | string | null
     start?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     end?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    details?: PositionUpdatedetailsInput | Enumerable<string>
-    technologies?: PositionUpdatetechnologiesInput | Enumerable<string>
+    details?: PositionUpdatedetailsInput | string[]
+    technologies?: PositionUpdatetechnologiesInput | string[]
     index?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
@@ -4200,8 +4451,8 @@ export namespace Prisma {
     employmentId?: StringFieldUpdateOperationsInput | string
     start?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     end?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    details?: PositionUpdatedetailsInput | Enumerable<string>
-    technologies?: PositionUpdatetechnologiesInput | Enumerable<string>
+    details?: PositionUpdatedetailsInput | string[]
+    technologies?: PositionUpdatetechnologiesInput | string[]
     index?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
@@ -4257,34 +4508,46 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type StringFilter = {
-    equals?: string
-    in?: Enumerable<string>
-    notIn?: Enumerable<string>
-    lt?: string
-    lte?: string
-    gt?: string
-    gte?: string
-    contains?: string
-    startsWith?: string
-    endsWith?: string
+  export type StringFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel>
+    in?: string[] | ListStringFieldRefInput<$PrismaModel>
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
     mode?: QueryMode
-    not?: NestedStringFilter | string
+    not?: NestedStringFilter<$PrismaModel> | string
   }
 
-  export type StringNullableFilter = {
-    equals?: string | null
-    in?: Enumerable<string> | null
-    notIn?: Enumerable<string> | null
-    lt?: string
-    lte?: string
-    gt?: string
-    gte?: string
-    contains?: string
-    startsWith?: string
-    endsWith?: string
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
     mode?: QueryMode
-    not?: NestedStringNullableFilter | string | null
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+    isSet?: boolean
+  }
+
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
     isSet?: boolean
   }
 
@@ -4292,18 +4555,6 @@ export namespace Prisma {
     every?: PositionWhereInput
     some?: PositionWhereInput
     none?: PositionWhereInput
-  }
-
-  export type IntNullableFilter = {
-    equals?: number | null
-    in?: Enumerable<number> | null
-    notIn?: Enumerable<number> | null
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedIntNullableFilter | number | null
-    isSet?: boolean
   }
 
   export type PositionOrderByRelationAggregateInput = {
@@ -4342,83 +4593,83 @@ export namespace Prisma {
     index?: SortOrder
   }
 
-  export type StringWithAggregatesFilter = {
-    equals?: string
-    in?: Enumerable<string>
-    notIn?: Enumerable<string>
-    lt?: string
-    lte?: string
-    gt?: string
-    gte?: string
-    contains?: string
-    startsWith?: string
-    endsWith?: string
+  export type StringWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel>
+    in?: string[] | ListStringFieldRefInput<$PrismaModel>
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
     mode?: QueryMode
-    not?: NestedStringWithAggregatesFilter | string
-    _count?: NestedIntFilter
-    _min?: NestedStringFilter
-    _max?: NestedStringFilter
+    not?: NestedStringWithAggregatesFilter<$PrismaModel> | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedStringFilter<$PrismaModel>
+    _max?: NestedStringFilter<$PrismaModel>
   }
 
-  export type StringNullableWithAggregatesFilter = {
-    equals?: string | null
-    in?: Enumerable<string> | null
-    notIn?: Enumerable<string> | null
-    lt?: string
-    lte?: string
-    gt?: string
-    gte?: string
-    contains?: string
-    startsWith?: string
-    endsWith?: string
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
     mode?: QueryMode
-    not?: NestedStringNullableWithAggregatesFilter | string | null
-    _count?: NestedIntNullableFilter
-    _min?: NestedStringNullableFilter
-    _max?: NestedStringNullableFilter
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
     isSet?: boolean
   }
 
-  export type IntNullableWithAggregatesFilter = {
-    equals?: number | null
-    in?: Enumerable<number> | null
-    notIn?: Enumerable<number> | null
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedIntNullableWithAggregatesFilter | number | null
-    _count?: NestedIntNullableFilter
-    _avg?: NestedFloatNullableFilter
-    _sum?: NestedIntNullableFilter
-    _min?: NestedIntNullableFilter
-    _max?: NestedIntNullableFilter
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
     isSet?: boolean
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+    isSet?: boolean
+  }
+
+  export type StringNullableListFilter<$PrismaModel = never> = {
+    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    has?: string | StringFieldRefInput<$PrismaModel> | null
+    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
+    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
   }
 
   export type EmploymentRelationFilter = {
     is?: EmploymentWhereInput
     isNot?: EmploymentWhereInput
-  }
-
-  export type DateTimeNullableFilter = {
-    equals?: Date | string | null
-    in?: Enumerable<Date> | Enumerable<string> | null
-    notIn?: Enumerable<Date> | Enumerable<string> | null
-    lt?: Date | string
-    lte?: Date | string
-    gt?: Date | string
-    gte?: Date | string
-    not?: NestedDateTimeNullableFilter | Date | string | null
-    isSet?: boolean
-  }
-
-  export type StringNullableListFilter = {
-    equals?: Enumerable<string> | null
-    has?: string | null
-    hasEvery?: Enumerable<string>
-    hasSome?: Enumerable<string>
-    isEmpty?: boolean
   }
 
   export type PositionCountOrderByAggregateInput = {
@@ -4458,18 +4709,18 @@ export namespace Prisma {
     index?: SortOrder
   }
 
-  export type DateTimeNullableWithAggregatesFilter = {
-    equals?: Date | string | null
-    in?: Enumerable<Date> | Enumerable<string> | null
-    notIn?: Enumerable<Date> | Enumerable<string> | null
-    lt?: Date | string
-    lte?: Date | string
-    gt?: Date | string
-    gte?: Date | string
-    not?: NestedDateTimeNullableWithAggregatesFilter | Date | string | null
-    _count?: NestedIntNullableFilter
-    _min?: NestedDateTimeNullableFilter
-    _max?: NestedDateTimeNullableFilter
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
     isSet?: boolean
   }
 
@@ -4498,36 +4749,22 @@ export namespace Prisma {
   }
 
   export type PositionCreateNestedManyWithoutEmploymentInput = {
-    create?: XOR<Enumerable<PositionCreateWithoutEmploymentInput>, Enumerable<PositionUncheckedCreateWithoutEmploymentInput>>
-    connectOrCreate?: Enumerable<PositionCreateOrConnectWithoutEmploymentInput>
+    create?: XOR<PositionCreateWithoutEmploymentInput, PositionUncheckedCreateWithoutEmploymentInput> | PositionCreateWithoutEmploymentInput[] | PositionUncheckedCreateWithoutEmploymentInput[]
+    connectOrCreate?: PositionCreateOrConnectWithoutEmploymentInput | PositionCreateOrConnectWithoutEmploymentInput[]
     createMany?: PositionCreateManyEmploymentInputEnvelope
-    connect?: Enumerable<PositionWhereUniqueInput>
+    connect?: PositionWhereUniqueInput | PositionWhereUniqueInput[]
   }
 
   export type PositionUncheckedCreateNestedManyWithoutEmploymentInput = {
-    create?: XOR<Enumerable<PositionCreateWithoutEmploymentInput>, Enumerable<PositionUncheckedCreateWithoutEmploymentInput>>
-    connectOrCreate?: Enumerable<PositionCreateOrConnectWithoutEmploymentInput>
+    create?: XOR<PositionCreateWithoutEmploymentInput, PositionUncheckedCreateWithoutEmploymentInput> | PositionCreateWithoutEmploymentInput[] | PositionUncheckedCreateWithoutEmploymentInput[]
+    connectOrCreate?: PositionCreateOrConnectWithoutEmploymentInput | PositionCreateOrConnectWithoutEmploymentInput[]
     createMany?: PositionCreateManyEmploymentInputEnvelope
-    connect?: Enumerable<PositionWhereUniqueInput>
+    connect?: PositionWhereUniqueInput | PositionWhereUniqueInput[]
   }
 
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
     unset?: boolean
-  }
-
-  export type PositionUpdateManyWithoutEmploymentNestedInput = {
-    create?: XOR<Enumerable<PositionCreateWithoutEmploymentInput>, Enumerable<PositionUncheckedCreateWithoutEmploymentInput>>
-    connectOrCreate?: Enumerable<PositionCreateOrConnectWithoutEmploymentInput>
-    upsert?: Enumerable<PositionUpsertWithWhereUniqueWithoutEmploymentInput>
-    createMany?: PositionCreateManyEmploymentInputEnvelope
-    set?: Enumerable<PositionWhereUniqueInput>
-    disconnect?: Enumerable<PositionWhereUniqueInput>
-    delete?: Enumerable<PositionWhereUniqueInput>
-    connect?: Enumerable<PositionWhereUniqueInput>
-    update?: Enumerable<PositionUpdateWithWhereUniqueWithoutEmploymentInput>
-    updateMany?: Enumerable<PositionUpdateManyWithWhereWithoutEmploymentInput>
-    deleteMany?: Enumerable<PositionScalarWhereInput>
   }
 
   export type NullableIntFieldUpdateOperationsInput = {
@@ -4539,18 +4776,40 @@ export namespace Prisma {
     unset?: boolean
   }
 
-  export type PositionUncheckedUpdateManyWithoutEmploymentNestedInput = {
-    create?: XOR<Enumerable<PositionCreateWithoutEmploymentInput>, Enumerable<PositionUncheckedCreateWithoutEmploymentInput>>
-    connectOrCreate?: Enumerable<PositionCreateOrConnectWithoutEmploymentInput>
-    upsert?: Enumerable<PositionUpsertWithWhereUniqueWithoutEmploymentInput>
+  export type PositionUpdateManyWithoutEmploymentNestedInput = {
+    create?: XOR<PositionCreateWithoutEmploymentInput, PositionUncheckedCreateWithoutEmploymentInput> | PositionCreateWithoutEmploymentInput[] | PositionUncheckedCreateWithoutEmploymentInput[]
+    connectOrCreate?: PositionCreateOrConnectWithoutEmploymentInput | PositionCreateOrConnectWithoutEmploymentInput[]
+    upsert?: PositionUpsertWithWhereUniqueWithoutEmploymentInput | PositionUpsertWithWhereUniqueWithoutEmploymentInput[]
     createMany?: PositionCreateManyEmploymentInputEnvelope
-    set?: Enumerable<PositionWhereUniqueInput>
-    disconnect?: Enumerable<PositionWhereUniqueInput>
-    delete?: Enumerable<PositionWhereUniqueInput>
-    connect?: Enumerable<PositionWhereUniqueInput>
-    update?: Enumerable<PositionUpdateWithWhereUniqueWithoutEmploymentInput>
-    updateMany?: Enumerable<PositionUpdateManyWithWhereWithoutEmploymentInput>
-    deleteMany?: Enumerable<PositionScalarWhereInput>
+    set?: PositionWhereUniqueInput | PositionWhereUniqueInput[]
+    disconnect?: PositionWhereUniqueInput | PositionWhereUniqueInput[]
+    delete?: PositionWhereUniqueInput | PositionWhereUniqueInput[]
+    connect?: PositionWhereUniqueInput | PositionWhereUniqueInput[]
+    update?: PositionUpdateWithWhereUniqueWithoutEmploymentInput | PositionUpdateWithWhereUniqueWithoutEmploymentInput[]
+    updateMany?: PositionUpdateManyWithWhereWithoutEmploymentInput | PositionUpdateManyWithWhereWithoutEmploymentInput[]
+    deleteMany?: PositionScalarWhereInput | PositionScalarWhereInput[]
+  }
+
+  export type PositionUncheckedUpdateManyWithoutEmploymentNestedInput = {
+    create?: XOR<PositionCreateWithoutEmploymentInput, PositionUncheckedCreateWithoutEmploymentInput> | PositionCreateWithoutEmploymentInput[] | PositionUncheckedCreateWithoutEmploymentInput[]
+    connectOrCreate?: PositionCreateOrConnectWithoutEmploymentInput | PositionCreateOrConnectWithoutEmploymentInput[]
+    upsert?: PositionUpsertWithWhereUniqueWithoutEmploymentInput | PositionUpsertWithWhereUniqueWithoutEmploymentInput[]
+    createMany?: PositionCreateManyEmploymentInputEnvelope
+    set?: PositionWhereUniqueInput | PositionWhereUniqueInput[]
+    disconnect?: PositionWhereUniqueInput | PositionWhereUniqueInput[]
+    delete?: PositionWhereUniqueInput | PositionWhereUniqueInput[]
+    connect?: PositionWhereUniqueInput | PositionWhereUniqueInput[]
+    update?: PositionUpdateWithWhereUniqueWithoutEmploymentInput | PositionUpdateWithWhereUniqueWithoutEmploymentInput[]
+    updateMany?: PositionUpdateManyWithWhereWithoutEmploymentInput | PositionUpdateManyWithWhereWithoutEmploymentInput[]
+    deleteMany?: PositionScalarWhereInput | PositionScalarWhereInput[]
+  }
+
+  export type PositionCreatedetailsInput = {
+    set: string[]
+  }
+
+  export type PositionCreatetechnologiesInput = {
+    set: string[]
   }
 
   export type EmploymentCreateNestedOneWithoutPositionsInput = {
@@ -4559,12 +4818,19 @@ export namespace Prisma {
     connect?: EmploymentWhereUniqueInput
   }
 
-  export type PositionCreatedetailsInput = {
-    set: Enumerable<string>
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+    unset?: boolean
   }
 
-  export type PositionCreatetechnologiesInput = {
-    set: Enumerable<string>
+  export type PositionUpdatedetailsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type PositionUpdatetechnologiesInput = {
+    set?: string[]
+    push?: string | string[]
   }
 
   export type EmploymentUpdateOneRequiredWithoutPositionsNestedInput = {
@@ -4572,168 +4838,153 @@ export namespace Prisma {
     connectOrCreate?: EmploymentCreateOrConnectWithoutPositionsInput
     upsert?: EmploymentUpsertWithoutPositionsInput
     connect?: EmploymentWhereUniqueInput
-    update?: XOR<EmploymentUpdateWithoutPositionsInput, EmploymentUncheckedUpdateWithoutPositionsInput>
-  }
-
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
-    unset?: boolean
-  }
-
-  export type PositionUpdatedetailsInput = {
-    set?: Enumerable<string>
-    push?: string | Enumerable<string>
-  }
-
-  export type PositionUpdatetechnologiesInput = {
-    set?: Enumerable<string>
-    push?: string | Enumerable<string>
+    update?: XOR<XOR<EmploymentUpdateToOneWithWhereWithoutPositionsInput, EmploymentUpdateWithoutPositionsInput>, EmploymentUncheckedUpdateWithoutPositionsInput>
   }
 
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
 
-  export type NestedStringFilter = {
-    equals?: string
-    in?: Enumerable<string>
-    notIn?: Enumerable<string>
-    lt?: string
-    lte?: string
-    gt?: string
-    gte?: string
-    contains?: string
-    startsWith?: string
-    endsWith?: string
-    not?: NestedStringFilter | string
+  export type NestedStringFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel>
+    in?: string[] | ListStringFieldRefInput<$PrismaModel>
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringFilter<$PrismaModel> | string
   }
 
-  export type NestedStringNullableFilter = {
-    equals?: string | null
-    in?: Enumerable<string> | null
-    notIn?: Enumerable<string> | null
-    lt?: string
-    lte?: string
-    gt?: string
-    gte?: string
-    contains?: string
-    startsWith?: string
-    endsWith?: string
-    not?: NestedStringNullableFilter | string | null
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
     isSet?: boolean
   }
 
-  export type NestedIntNullableFilter = {
-    equals?: number | null
-    in?: Enumerable<number> | null
-    notIn?: Enumerable<number> | null
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedIntNullableFilter | number | null
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
     isSet?: boolean
   }
 
-  export type NestedStringWithAggregatesFilter = {
-    equals?: string
-    in?: Enumerable<string>
-    notIn?: Enumerable<string>
-    lt?: string
-    lte?: string
-    gt?: string
-    gte?: string
-    contains?: string
-    startsWith?: string
-    endsWith?: string
-    not?: NestedStringWithAggregatesFilter | string
-    _count?: NestedIntFilter
-    _min?: NestedStringFilter
-    _max?: NestedStringFilter
+  export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel>
+    in?: string[] | ListStringFieldRefInput<$PrismaModel>
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringWithAggregatesFilter<$PrismaModel> | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedStringFilter<$PrismaModel>
+    _max?: NestedStringFilter<$PrismaModel>
   }
 
-  export type NestedIntFilter = {
-    equals?: number
-    in?: Enumerable<number>
-    notIn?: Enumerable<number>
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedIntFilter | number
+  export type NestedIntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
   }
 
-  export type NestedStringNullableWithAggregatesFilter = {
-    equals?: string | null
-    in?: Enumerable<string> | null
-    notIn?: Enumerable<string> | null
-    lt?: string
-    lte?: string
-    gt?: string
-    gte?: string
-    contains?: string
-    startsWith?: string
-    endsWith?: string
-    not?: NestedStringNullableWithAggregatesFilter | string | null
-    _count?: NestedIntNullableFilter
-    _min?: NestedStringNullableFilter
-    _max?: NestedStringNullableFilter
+  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
     isSet?: boolean
   }
 
-  export type NestedIntNullableWithAggregatesFilter = {
-    equals?: number | null
-    in?: Enumerable<number> | null
-    notIn?: Enumerable<number> | null
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedIntNullableWithAggregatesFilter | number | null
-    _count?: NestedIntNullableFilter
-    _avg?: NestedFloatNullableFilter
-    _sum?: NestedIntNullableFilter
-    _min?: NestedIntNullableFilter
-    _max?: NestedIntNullableFilter
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
     isSet?: boolean
   }
 
-  export type NestedFloatNullableFilter = {
-    equals?: number | null
-    in?: Enumerable<number> | null
-    notIn?: Enumerable<number> | null
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedFloatNullableFilter | number | null
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
     isSet?: boolean
   }
 
-  export type NestedDateTimeNullableFilter = {
-    equals?: Date | string | null
-    in?: Enumerable<Date> | Enumerable<string> | null
-    notIn?: Enumerable<Date> | Enumerable<string> | null
-    lt?: Date | string
-    lte?: Date | string
-    gt?: Date | string
-    gte?: Date | string
-    not?: NestedDateTimeNullableFilter | Date | string | null
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
     isSet?: boolean
   }
 
-  export type NestedDateTimeNullableWithAggregatesFilter = {
-    equals?: Date | string | null
-    in?: Enumerable<Date> | Enumerable<string> | null
-    notIn?: Enumerable<Date> | Enumerable<string> | null
-    lt?: Date | string
-    lte?: Date | string
-    gt?: Date | string
-    gte?: Date | string
-    not?: NestedDateTimeNullableWithAggregatesFilter | Date | string | null
-    _count?: NestedIntNullableFilter
-    _min?: NestedDateTimeNullableFilter
-    _max?: NestedDateTimeNullableFilter
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
     isSet?: boolean
   }
 
@@ -4742,8 +4993,8 @@ export namespace Prisma {
     title?: string | null
     start?: Date | string | null
     end?: Date | string | null
-    details?: PositionCreatedetailsInput | Enumerable<string>
-    technologies?: PositionCreatetechnologiesInput | Enumerable<string>
+    details?: PositionCreatedetailsInput | string[]
+    technologies?: PositionCreatetechnologiesInput | string[]
     index?: number | null
   }
 
@@ -4752,8 +5003,8 @@ export namespace Prisma {
     title?: string | null
     start?: Date | string | null
     end?: Date | string | null
-    details?: PositionCreatedetailsInput | Enumerable<string>
-    technologies?: PositionCreatetechnologiesInput | Enumerable<string>
+    details?: PositionCreatedetailsInput | string[]
+    technologies?: PositionCreatetechnologiesInput | string[]
     index?: number | null
   }
 
@@ -4763,7 +5014,7 @@ export namespace Prisma {
   }
 
   export type PositionCreateManyEmploymentInputEnvelope = {
-    data: Enumerable<PositionCreateManyEmploymentInput>
+    data: PositionCreateManyEmploymentInput | PositionCreateManyEmploymentInput[]
   }
 
   export type PositionUpsertWithWhereUniqueWithoutEmploymentInput = {
@@ -4779,21 +5030,21 @@ export namespace Prisma {
 
   export type PositionUpdateManyWithWhereWithoutEmploymentInput = {
     where: PositionScalarWhereInput
-    data: XOR<PositionUpdateManyMutationInput, PositionUncheckedUpdateManyWithoutPositionsInput>
+    data: XOR<PositionUpdateManyMutationInput, PositionUncheckedUpdateManyWithoutEmploymentInput>
   }
 
   export type PositionScalarWhereInput = {
-    AND?: Enumerable<PositionScalarWhereInput>
-    OR?: Enumerable<PositionScalarWhereInput>
-    NOT?: Enumerable<PositionScalarWhereInput>
-    id?: StringFilter | string
-    title?: StringNullableFilter | string | null
-    employmentId?: StringFilter | string
-    start?: DateTimeNullableFilter | Date | string | null
-    end?: DateTimeNullableFilter | Date | string | null
-    details?: StringNullableListFilter
-    technologies?: StringNullableListFilter
-    index?: IntNullableFilter | number | null
+    AND?: PositionScalarWhereInput | PositionScalarWhereInput[]
+    OR?: PositionScalarWhereInput[]
+    NOT?: PositionScalarWhereInput | PositionScalarWhereInput[]
+    id?: StringFilter<"Position"> | string
+    title?: StringNullableFilter<"Position"> | string | null
+    employmentId?: StringFilter<"Position"> | string
+    start?: DateTimeNullableFilter<"Position"> | Date | string | null
+    end?: DateTimeNullableFilter<"Position"> | Date | string | null
+    details?: StringNullableListFilter<"Position">
+    technologies?: StringNullableListFilter<"Position">
+    index?: IntNullableFilter<"Position"> | number | null
   }
 
   export type EmploymentCreateWithoutPositionsInput = {
@@ -4820,6 +5071,12 @@ export namespace Prisma {
   export type EmploymentUpsertWithoutPositionsInput = {
     update: XOR<EmploymentUpdateWithoutPositionsInput, EmploymentUncheckedUpdateWithoutPositionsInput>
     create: XOR<EmploymentCreateWithoutPositionsInput, EmploymentUncheckedCreateWithoutPositionsInput>
+    where?: EmploymentWhereInput
+  }
+
+  export type EmploymentUpdateToOneWithWhereWithoutPositionsInput = {
+    where?: EmploymentWhereInput
+    data: XOR<EmploymentUpdateWithoutPositionsInput, EmploymentUncheckedUpdateWithoutPositionsInput>
   }
 
   export type EmploymentUpdateWithoutPositionsInput = {
@@ -4841,8 +5098,8 @@ export namespace Prisma {
     title?: string | null
     start?: Date | string | null
     end?: Date | string | null
-    details?: PositionCreatedetailsInput | Enumerable<string>
-    technologies?: PositionCreatetechnologiesInput | Enumerable<string>
+    details?: PositionCreatedetailsInput | string[]
+    technologies?: PositionCreatetechnologiesInput | string[]
     index?: number | null
   }
 
@@ -4850,8 +5107,8 @@ export namespace Prisma {
     title?: NullableStringFieldUpdateOperationsInput | string | null
     start?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     end?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    details?: PositionUpdatedetailsInput | Enumerable<string>
-    technologies?: PositionUpdatetechnologiesInput | Enumerable<string>
+    details?: PositionUpdatedetailsInput | string[]
+    technologies?: PositionUpdatetechnologiesInput | string[]
     index?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
@@ -4859,21 +5116,41 @@ export namespace Prisma {
     title?: NullableStringFieldUpdateOperationsInput | string | null
     start?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     end?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    details?: PositionUpdatedetailsInput | Enumerable<string>
-    technologies?: PositionUpdatetechnologiesInput | Enumerable<string>
+    details?: PositionUpdatedetailsInput | string[]
+    technologies?: PositionUpdatetechnologiesInput | string[]
     index?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
-  export type PositionUncheckedUpdateManyWithoutPositionsInput = {
+  export type PositionUncheckedUpdateManyWithoutEmploymentInput = {
     title?: NullableStringFieldUpdateOperationsInput | string | null
     start?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     end?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    details?: PositionUpdatedetailsInput | Enumerable<string>
-    technologies?: PositionUpdatetechnologiesInput | Enumerable<string>
+    details?: PositionUpdatedetailsInput | string[]
+    technologies?: PositionUpdatetechnologiesInput | string[]
     index?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
 
+
+  /**
+   * Aliases for legacy arg types
+   */
+    /**
+     * @deprecated Use EmploymentCountOutputTypeDefaultArgs instead
+     */
+    export type EmploymentCountOutputTypeArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = EmploymentCountOutputTypeDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use EmploymentDefaultArgs instead
+     */
+    export type EmploymentArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = EmploymentDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use PositionDefaultArgs instead
+     */
+    export type PositionArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = PositionDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use EducationDefaultArgs instead
+     */
+    export type EducationArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = EducationDefaultArgs<ExtArgs>
 
   /**
    * Batch Payload for updateMany & deleteMany & createMany

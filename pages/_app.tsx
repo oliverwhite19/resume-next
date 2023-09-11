@@ -1,10 +1,7 @@
-import { ColorScheme, Global } from '@mantine/core';
-import { MantineProvider, ColorSchemeProvider } from '@mantine/core';
-import { useLocalStorage } from '@mantine/hooks';
+import { MantineProvider } from '@mantine/core';
 import { AppProps } from 'next/app';
 import styled from '@emotion/styled';
 import { theme } from '../styles/theme';
-import { useEffect } from 'react';
 
 const Layout = styled('div')`
     position: relative;
@@ -18,41 +15,12 @@ const Layout = styled('div')`
     }
 `;
 
-const Root = ({ Component, pageProps }: AppProps) => {
-    let darkTheme = false;
-
-    useEffect(function onFirstMount() {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        darkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    }, []);
-
-    const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
-        key: 'mantine-color-scheme',
-        defaultValue: darkTheme ? 'dark' : 'light',
-    });
-
-    const toggleColorScheme = (value?: ColorScheme) => {
-        const newTheme = value || (colorScheme === 'dark' ? 'light' : 'dark');
-        document.documentElement.setAttribute('data-theme', newTheme);
-        setColorScheme(newTheme);
-    };
-
-    return (
-        <ColorSchemeProvider
-            colorScheme={colorScheme}
-            toggleColorScheme={toggleColorScheme}
-        >
-            <MantineProvider
-                theme={{ ...{ colorScheme }, ...theme }}
-                withGlobalStyles
-                withNormalizeCSS
-            >
-                <Layout>
-                    <Component {...pageProps} />
-                </Layout>
-            </MantineProvider>
-        </ColorSchemeProvider>
-    );
-};
+const Root = ({ Component, pageProps }: AppProps) => (
+    <MantineProvider theme={{ ...theme }} withGlobalStyles withNormalizeCSS>
+        <Layout>
+            <Component {...pageProps} />
+        </Layout>
+    </MantineProvider>
+);
 
 export default Root;

@@ -1,4 +1,3 @@
-import { ThemeSwitch } from '../ThemeSwitch/themeSwitch';
 import { useStyles } from './Header.styles';
 import { Stack, Button, Avatar, Modal, useMantineTheme } from '@mantine/core';
 import { H1, P } from '../Text';
@@ -23,17 +22,13 @@ const Header = ({ withDescription }: { withDescription: boolean }) => {
                     <H1
                         variant="gradient"
                         gradient={{
-                            from:
-                                theme.colorScheme === 'dark'
-                                    ? 'white'
-                                    : 'black',
+                            from: 'black',
                             to: 'red',
                             deg: 45,
                         }}
                     >
                         Oliver White
                     </H1>
-                    <ThemeSwitch />
                 </div>
                 {withDescription && (
                     <>
@@ -92,11 +87,7 @@ const Header = ({ withDescription }: { withDescription: boolean }) => {
                 onClose={() => setOpened(false)}
                 title="Contact"
                 centered
-                overlayColor={
-                    theme.colorScheme === 'dark'
-                        ? theme.colors.dark[9]
-                        : theme.colors.gray[2]
-                }
+                overlayColor={theme.colors.gray[2]}
                 overlayOpacity={0.7}
                 overlayBlur={9}
                 fullScreen
