@@ -9,6 +9,10 @@ const CenteredP = styled(P)`
     text-align: center;
 `;
 
+const SPaper = styled(MPaper)`
+    background-color: unset;
+`;
+
 interface Props {
     link: string;
     title: string;
@@ -19,7 +23,13 @@ interface Props {
 const Paper = ({ link, title, description, positions }: Props) => {
     const { classes } = useStyles();
     return (
-        <MPaper p="md">
+        <MPaper
+            shadow="xl"
+            radius="md"
+            p="md"
+            withBorder
+            className={classes.paperStyles}
+        >
             <div className={classes.headerWrapper}>
                 <a href={link} target="_blank" rel="noopener noreferrer">
                     <h2>{title}</h2>

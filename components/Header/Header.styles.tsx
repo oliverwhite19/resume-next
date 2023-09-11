@@ -6,6 +6,12 @@ const useStyles = createStyles((theme) => ({
         justifyContent: 'space-between',
         alignItems: 'center',
     },
+
+    headerContainer: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '2rem',
+    },
     buttonContainer: {
         display: 'flex',
         justifyContent: 'flex-start',
@@ -17,6 +23,7 @@ const useStyles = createStyles((theme) => ({
         p: {
             marginLeft: '0.875rem',
         },
+        padding: '0.5rem',
     },
     contactModalButtonContents: {
         width: '100%',

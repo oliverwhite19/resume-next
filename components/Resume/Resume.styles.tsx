@@ -1,5 +1,4 @@
 import { createStyles } from '@mantine/core';
-
 const useStyles = createStyles((theme) => ({
     headerWrapper: {
         display: 'flex',
@@ -22,6 +21,13 @@ const useStyles = createStyles((theme) => ({
     chip: {
         label: {
             cursor: 'initial',
+        },
+    },
+
+    paperStyles: {
+        marginTop: '1rem',
+        ':not(:last-child)': {
+            marginBottom: '1rem',
         },
     },
 }));
