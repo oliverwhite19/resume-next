@@ -5,6 +5,9 @@ const useStyles = createStyles((theme) => ({
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
+        '@media (max-width: 710px)': {
+            flexDirection: 'column',
+        },
     },
 
     headerContainer: {
@@ -16,6 +19,9 @@ const useStyles = createStyles((theme) => ({
         display: 'flex',
         justifyContent: 'flex-start',
         gap: '1rem',
+        '@media (max-width: 500px)': {
+            flexDirection: 'column',
+        },
     },
     avatarContainer: {
         display: 'flex',
