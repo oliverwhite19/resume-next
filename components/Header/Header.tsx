@@ -41,9 +41,7 @@ const Header = ({ withDescription }: { withDescription: boolean }) => {
                 >
                     Oliver White
                 </H1>
-            </div>
-            {withDescription && (
-                <>
+                {withDescription && (
                     <div className={classes.buttonContainer}>
                         <a
                             href="/files/OliverWhiteResume.pdf"
@@ -70,6 +68,10 @@ const Header = ({ withDescription }: { withDescription: boolean }) => {
                             Contact
                         </Button>
                     </div>
+                )}
+            </div>
+            {withDescription && (
+                <>
                     <div className={classes.avatarContainer}>
                         <Avatar
                             radius="xl"
