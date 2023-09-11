@@ -1,5 +1,5 @@
 import type { Position as PositionType } from '../../prisma/generated/client';
-import { List, Space, Chip } from '@mantine/core';
+import { List, Space, Chip, Group } from '@mantine/core';
 import { Point } from 'tabler-icons-react';
 import { useStyles } from './Resume.styles';
 import { format } from 'date-fns';
@@ -29,18 +29,20 @@ const Position = ({ position }: { position: PositionType }) => {
             </List>
             <Space h="lg" />
             {!isSmallScreen && (
-                <Chip.Group position="center">
-                    {technologies.map((tech, index) => (
-                        <Chip
-                            className={classes.chip}
-                            color="red"
-                            variant="filled"
-                            key={index}
-                            size="xs"
-                        >
-                            {tech}
-                        </Chip>
-                    ))}
+                <Chip.Group>
+                    <Group position="center">
+                        {technologies.map((tech, index) => (
+                            <Chip
+                                className={classes.chip}
+                                color="red"
+                                variant="filled"
+                                key={index}
+                                size="xs"
+                            >
+                                {tech}
+                            </Chip>
+                        ))}
+                    </Group>
                 </Chip.Group>
             )}
         </div>
