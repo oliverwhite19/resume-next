@@ -13,8 +13,6 @@ const Layout = styled('div')`
     @media (max-width: 1000px) : {
         padding: 52px 1.3125rem 1rem 1.3125rem;
     }
-    background-color: #f5f5f9;
-    border-radius: 1rem;
 `;
 
 const Root = ({ Component, pageProps }: AppProps) => (
