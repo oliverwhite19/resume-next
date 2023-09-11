@@ -4,6 +4,7 @@ import { useStyles } from './Resume.styles';
 import styled from '@emotion/styled';
 import { Position } from './Position';
 import type { Position as PositionType } from '../../prisma/generated/client';
+import { compareDesc } from 'date-fns';
 
 const CenteredP = styled(P)`
     text-align: center;
@@ -38,9 +39,13 @@ const Paper = ({ link, title, description, positions }: Props) => {
 
             <CenteredP>{description}</CenteredP>
             <Space h="lg" />
-            {positions?.map((position) => (
-                <Position key={position.title} position={position} />
-            ))}
+            {positions
+                ?.sort((one, two) =>
+                    one.end && two.start ? compareDesc(one.end, two.start) : -1,
+                )
+                ?.map((position) => (
+                    <Position key={position.title} position={position} />
+                ))}
         </MPaper>
     );
 };
