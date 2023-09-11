@@ -87,10 +87,11 @@ const Header = ({ withDescription }: { withDescription: boolean }) => {
                 onClose={() => setOpened(false)}
                 title="Contact"
                 centered
-                overlayColor={theme.colors.gray[2]}
-                overlayOpacity={0.7}
-                overlayBlur={9}
-                fullScreen
+                overlayProps={{
+                    color: theme.colors.gray[2],
+                    opacity: 0.7,
+                    blur: 9,
+                }}
             >
                 <ContactModal />
             </Modal>
