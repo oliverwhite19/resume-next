@@ -1,6 +1,6 @@
 import { createStyles } from '@mantine/core';
 
-const useStyles = createStyles((theme) => ({
+const useStyles = createStyles(() => ({
     titleContainer: {
         display: 'flex',
         justifyContent: 'space-between',
@@ -42,11 +42,11 @@ const useStyles = createStyles((theme) => ({
     contactModalButtonAction: {
         fontSize: '0.875rem',
         fontWeight: 'bold',
-        color: theme.colorScheme === 'dark' ? 'white' : 'black',
+        color: 'black',
     },
     contactModalButtonAccount: {
         fontSize: '0.6rem',
-        color: theme.colorScheme === 'dark' ? 'darkgray' : 'lightgrey',
+        color: 'darkgray',
     },
 }));
 
