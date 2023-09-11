@@ -14,6 +14,39 @@ const Position = ({ position }: { position: PositionType }) => {
         `(max-width: ${screenSizes.largeMobile}px)`,
     );
 
+    const colours = (tech: string) => {
+        switch (tech) {
+            case 'JavaScript':
+            case 'TypeScript':
+                return 'red';
+            case 'React':
+            case 'Angular':
+                return 'purple';
+            case 'Ruby on Rails':
+            case 'Laravel':
+                return 'green';
+            case 'React Native':
+            case 'Android':
+                return 'yellow';
+            case 'Docker':
+            case 'Java':
+                return 'pink';
+            case 'Express':
+            case 'PHP':
+                return 'indigo';
+            case 'GraphQL':
+                return 'gray';
+            case 'PostgreSQL':
+            case 'MySQL':
+                return 'lime';
+            case 'NextJS':
+            case 'Ionic':
+                return 'cyan';
+            default:
+                return undefined;
+        }
+    };
+
     return (
         <div className={classes.position}>
             <h3>{title}</h3>
@@ -34,10 +67,10 @@ const Position = ({ position }: { position: PositionType }) => {
                         {technologies.map((tech, index) => (
                             <Chip
                                 className={classes.chip}
-                                color="red"
-                                variant="filled"
+                                color={colours(tech)}
+                                variant="light"
                                 key={index}
-                                size="xs"
+                                checked
                             >
                                 {tech}
                             </Chip>

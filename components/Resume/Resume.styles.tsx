@@ -21,7 +21,11 @@ const useStyles = createStyles((theme) => ({
     chip: {
         label: {
             cursor: 'initial',
+            '&>span': {
+                display: 'none',
+            },
         },
+        pointerEvents: 'none',
     },
 
     paperStyles: {

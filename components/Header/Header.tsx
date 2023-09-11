@@ -1,12 +1,5 @@
 import { useStyles } from './Header.styles';
-import {
-    Stack,
-    Button,
-    Avatar,
-    Modal,
-    useMantineTheme,
-    Paper,
-} from '@mantine/core';
+import { Button, Avatar, Modal, useMantineTheme, Paper } from '@mantine/core';
 import { H1, P } from '../Text';
 import { useState } from 'react';
 import { ContactModal } from './ContactModal';
