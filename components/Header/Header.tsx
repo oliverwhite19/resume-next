@@ -70,7 +70,7 @@ const Header = ({ withDescription }: { withDescription: boolean }) => {
                             radius="xl"
                             size="xl"
                             color="red"
-                            src="images/author_.png"
+                            src="images/author_.jpg"
                             alt="A picture of me!"
                             sx={{ img: { height: '84px', width: '84px' } }}
                         />
