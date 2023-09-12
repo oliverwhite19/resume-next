@@ -30,6 +30,10 @@ const useStyles = createStyles(() => ({
             marginLeft: '0.875rem',
         },
         padding: '0.5rem',
+        '@media (max-width: 542px)': {
+            flexDirection: 'column',
+            gap: '2rem',
+        },
     },
     contactModalButtonContents: {
         width: '100%',

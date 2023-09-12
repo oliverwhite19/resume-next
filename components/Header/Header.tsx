@@ -68,7 +68,7 @@ const Header = ({ withDescription }: { withDescription: boolean }) => {
                     <div className={classes.avatarContainer}>
                         <Avatar
                             radius="xl"
-                            size="48"
+                            size="10rem"
                             color="red"
                             src="images/author_.jpg"
                             alt="A picture of me!"
