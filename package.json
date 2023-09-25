@@ -4,7 +4,7 @@
     "private": false,
     "scripts": {
         "generate": "prisma generate",
-        "predev": "bun run generate",
+        "predev": "yarn run generate",
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
