@@ -1,7 +1,10 @@
-import { Text } from '@mantine/core';
+import { Text, TextProps } from '@mantine/core';
 import { useStyles } from './text.styles';
 
-const H1 = ({ children, ...props }: { children: React.ReactNode } & any) => {
+const H1 = ({
+  children,
+  ...props
+}: { children: React.ReactNode } & TextProps) => {
   const { classes } = useStyles();
   return (
     <Text className={classes.h1} {...props}>

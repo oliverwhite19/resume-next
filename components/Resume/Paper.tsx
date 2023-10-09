@@ -10,10 +10,6 @@ const CenteredP = styled(P)`
   text-align: center;
 `;
 
-const SPaper = styled(MPaper)`
-  background-color: unset;
-`;
-
 interface Props {
   link: string;
   title: string;
