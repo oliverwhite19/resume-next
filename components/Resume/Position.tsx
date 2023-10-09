@@ -1,11 +1,11 @@
-import type { Position as PositionType } from '../../prisma/generated/client';
-import { List, Space, Chip, Group } from '@mantine/core';
-import { Point } from 'tabler-icons-react';
-import { useStyles } from './Resume.styles';
-import { format } from 'date-fns';
-import { Smol } from '../Text';
+import { Chip, Group, List, Space } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
+import { format } from 'date-fns';
+import { Point } from 'tabler-icons-react';
+import type { Position as PositionType } from '../../prisma/generated/client';
 import { screenSizes } from '../../styles/theme';
+import { Smol } from '../Text';
+import { useStyles } from './Resume.styles';
 
 const Position = ({ position }: { position: PositionType }) => {
   const { classes } = useStyles();

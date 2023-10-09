@@ -1,11 +1,11 @@
+import dynamic from 'next/dynamic';
 import { Education } from '../components/Education/Education';
 import { Header } from '../components/Header/Header';
 import { WorkExperience } from '../components/WorkExperience/WorkExperience';
-import { useStyles } from '../styles/index.styles';
-import { EmploymentWithPositions } from '../types';
 import type { Education as EducationType } from '../prisma/generated/client';
 import { PrismaClient } from '../prisma/generated/client';
-import dynamic from 'next/dynamic';
+import { useStyles } from '../styles/index.styles';
+import { EmploymentWithPositions } from '../types';
 
 const Resume = ({
   employment,

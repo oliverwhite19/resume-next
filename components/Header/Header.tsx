@@ -1,10 +1,10 @@
-import { useStyles } from './Header.styles';
-import { Button, Avatar, Modal, useMantineTheme, Paper } from '@mantine/core';
-import { H1, P } from '../Text';
-import { useState } from 'react';
-import { ContactModal } from './ContactModal';
-import { screenSizes } from '../../styles/theme';
+import { Avatar, Button, Modal, Paper, useMantineTheme } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
+import { useState } from 'react';
+import { screenSizes } from '../../styles/theme';
+import { H1, P } from '../Text';
+import { ContactModal } from './ContactModal';
+import { useStyles } from './Header.styles';
 
 const Header = ({ withDescription }: { withDescription: boolean }) => {
   const { classes } = useStyles();

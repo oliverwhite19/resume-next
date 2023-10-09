@@ -1,13 +1,12 @@
-import * as React from 'react';
 import { Button, Paper, Space } from '@mantine/core';
+import dynamic from 'next/dynamic';
 import {
   BrandGithub,
   BrandLinkedin,
-  MailFast,
   FilePower,
+  MailFast,
 } from 'tabler-icons-react';
 import { Header } from '../components/Header/Header';
-import dynamic from 'next/dynamic';
 
 const Linktree = () => {
   return (

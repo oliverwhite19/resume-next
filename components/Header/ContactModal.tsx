@@ -1,6 +1,5 @@
-import { Mail, BrandGithub, BrandLinkedin } from 'tabler-icons-react';
 import { Button } from '@mantine/core';
-import React from 'react';
+import { BrandGithub, BrandLinkedin, Mail } from 'tabler-icons-react';
 import { useStyles } from './Header.styles';
 
 const buttonStyle = () => ({
