@@ -5,18 +5,18 @@ declare module '*.jpeg';
 declare module '*.ico';
 
 export type Currency = {
-    name: string;
-    value: string;
-    countryCode: string;
-    symbolLeft?: string;
-    symbolRight?: string;
+  name: string;
+  value: string;
+  countryCode: string;
+  symbolLeft?: string;
+  symbolRight?: string;
 };
 
 type EmploymentWithPositions = Prisma.EmploymentGetPayload<{
-    include: { positions: true };
+  include: { positions: true };
 }>;
 
 type EducationWithTitle = {
-    title: string;
-    list: Array<Education>;
+  title: string;
+  list: Array<Education>;
 };

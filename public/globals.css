@@ -2,7 +2,9 @@
 @import './fonts/Amiko.css';
 @import './fonts/Cairo.css';
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -12,9 +14,20 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: Oxygen, sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-  
+  font-family:
+    Oxygen,
+    sans-serif,
+    -apple-system,
+    BlinkMacSystemFont,
+    Segoe UI,
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    Fira Sans,
+    Droid Sans,
+    Helvetica Neue,
+    sans-serif;
 }
 
 #__next {
@@ -38,6 +51,6 @@ a {
   margin: 0 auto;
   padding: 2rem 1.3125rem 1rem 1.3125rem;
   @media (max-width: 1000px) : {
-      padding: 52px 1.3125rem 1rem 1.3125rem;
+    padding: 52px 1.3125rem 1rem 1.3125rem;
   }
 }
