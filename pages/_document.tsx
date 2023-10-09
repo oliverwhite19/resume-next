@@ -1,8 +1,5 @@
-/* eslint-disable @next/next/no-css-tags */
-/* eslint-disable @next/next/no-title-in-document-head */
 import { createGetInitialProps } from '@mantine/next';
 import Document, { Head, Html, Main, NextScript } from 'next/document';
-import Script from 'next/script';
 
 const getInitialProps = createGetInitialProps();
 
