@@ -24,7 +24,7 @@ const ContactModal = () => {
             orientation="vertical"
         >
             <Button
-                leftIcon={<Mail size={60} />}
+                leftSection={<Mail size={60} />}
                 variant="outline"
                 color="red"
                 radius="xs"

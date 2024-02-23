@@ -3,7 +3,7 @@
  * Client
 **/
 
-import * as runtime from './runtime/library';
+import * as runtime from './runtime/library.js';
 import $Types = runtime.Types // general types
 import $Public = runtime.Types.Public
 import $Utils = runtime.Types.Utils
@@ -46,7 +46,7 @@ export type Education = $Result.DefaultSelection<Prisma.$EducationPayload>
 export class PrismaClient<
   T extends Prisma.PrismaClientOptions = Prisma.PrismaClientOptions,
   U = 'log' extends keyof T ? T['log'] extends Array<Prisma.LogLevel | Prisma.LogDefinition> ? Prisma.GetEvents<T['log']> : never : never,
-  ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs
+  ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
 > {
   [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['other'] }
 
@@ -205,8 +205,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 5.2.0
-   * Query Engine version: 2804dc98259d2ea960602aca6b8e7fdc03c1758f
+   * Prisma Client JS version: 5.10.2
+   * Query Engine version: 5a9203d0590c951969e85a7d07215503f4672eb9
    */
   export type PrismaVersion = {
     client: string
@@ -631,11 +631,11 @@ export namespace Prisma {
   }
 
 
-  interface TypeMapCb extends $Utils.Fn<{extArgs: $Extensions.Args}, $Utils.Record<string, any>> {
+  interface TypeMapCb extends $Utils.Fn<{extArgs: $Extensions.InternalArgs}, $Utils.Record<string, any>> {
     returns: Prisma.TypeMap<this['params']['extArgs']>
   }
 
-  export type TypeMap<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     meta: {
       modelProps: 'employment' | 'position' | 'education'
       txIsolationLevel: never
@@ -878,23 +878,19 @@ export namespace Prisma {
   export const defineExtension: $Extensions.ExtendsHook<'define', Prisma.TypeMapCb, $Extensions.DefaultArgs>
   export type DefaultPrismaClient = PrismaClient
   export type ErrorFormat = 'pretty' | 'colorless' | 'minimal'
-
   export interface PrismaClientOptions {
     /**
      * Overwrites the datasource url from your schema.prisma file
      */
     datasources?: Datasources
-
     /**
      * Overwrites the datasource url from your schema.prisma file
      */
     datasourceUrl?: string
-
     /**
      * @default "colorless"
      */
     errorFormat?: ErrorFormat
-
     /**
      * @example
      * ```
@@ -903,15 +899,24 @@ export namespace Prisma {
      * 
      * // Emit as events
      * log: [
-     *  { emit: 'stdout', level: 'query' },
-     *  { emit: 'stdout', level: 'info' },
-     *  { emit: 'stdout', level: 'warn' }
-     *  { emit: 'stdout', level: 'error' }
+     *   { emit: 'stdout', level: 'query' },
+     *   { emit: 'stdout', level: 'info' },
+     *   { emit: 'stdout', level: 'warn' }
+     *   { emit: 'stdout', level: 'error' }
      * ]
      * ```
      * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/logging#the-log-option).
      */
-    log?: Array<LogLevel | LogDefinition>
+    log?: (LogLevel | LogDefinition)[]
+    /**
+     * The default values for transactionOptions
+     * maxWait ?= 2000
+     * timeout ?= 5000
+     */
+    transactionOptions?: {
+      maxWait?: number
+      timeout?: number
+    }
   }
 
   /* Types for Logging */
@@ -1007,7 +1012,7 @@ export namespace Prisma {
     positions: number
   }
 
-  export type EmploymentCountOutputTypeSelect<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EmploymentCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     positions?: boolean | EmploymentCountOutputTypeCountPositionsArgs
   }
 
@@ -1016,7 +1021,7 @@ export namespace Prisma {
   /**
    * EmploymentCountOutputType without action
    */
-  export type EmploymentCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EmploymentCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the EmploymentCountOutputType
      */
@@ -1027,7 +1032,7 @@ export namespace Prisma {
   /**
    * EmploymentCountOutputType without action
    */
-  export type EmploymentCountOutputTypeCountPositionsArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EmploymentCountOutputTypeCountPositionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: PositionWhereInput
   }
 
@@ -1116,7 +1121,7 @@ export namespace Prisma {
     _all?: true
   }
 
-  export type EmploymentAggregateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EmploymentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Filter which Employment to aggregate.
      */
@@ -1188,7 +1193,7 @@ export namespace Prisma {
 
 
 
-  export type EmploymentGroupByArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EmploymentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: EmploymentWhereInput
     orderBy?: EmploymentOrderByWithAggregationInput | EmploymentOrderByWithAggregationInput[]
     by: EmploymentScalarFieldEnum[] | EmploymentScalarFieldEnum
@@ -1229,7 +1234,7 @@ export namespace Prisma {
     >
 
 
-  export type EmploymentSelect<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type EmploymentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     company?: boolean
     companyLink?: boolean
@@ -1247,18 +1252,18 @@ export namespace Prisma {
     index?: boolean
   }
 
-  export type EmploymentInclude<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EmploymentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     positions?: boolean | Employment$positionsArgs<ExtArgs>
     _count?: boolean | EmploymentCountOutputTypeDefaultArgs<ExtArgs>
   }
 
 
-  export type $EmploymentPayload<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type $EmploymentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Employment"
     objects: {
       positions: Prisma.$PositionPayload<ExtArgs>[]
     }
-    scalars: $Extensions.GetResult<{
+    scalars: $Extensions.GetPayloadResult<{
       id: string
       company: string | null
       companyLink: string | null
@@ -1271,12 +1276,12 @@ export namespace Prisma {
 
   type EmploymentGetPayload<S extends boolean | null | undefined | EmploymentDefaultArgs> = $Result.GetResult<Prisma.$EmploymentPayload, S>
 
-  type EmploymentCountArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = 
-    Omit<EmploymentFindManyArgs, 'select' | 'include'> & {
+  type EmploymentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<EmploymentFindManyArgs, 'select' | 'include' | 'distinct'> & {
       select?: EmploymentCountAggregateInputType | true
     }
 
-  export interface EmploymentDelegate<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> {
+  export interface EmploymentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
     [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Employment'], meta: { name: 'Employment' } }
     /**
      * Find zero or one Employment that matches the filter.
@@ -1653,7 +1658,7 @@ export namespace Prisma {
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__EmploymentClient<T, Null = never, ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__EmploymentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: 'PrismaPromise';
 
     positions<T extends Employment$positionsArgs<ExtArgs> = {}>(args?: Subset<T, Employment$positionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PositionPayload<ExtArgs>, T, 'findMany'> | Null>;
@@ -1699,7 +1704,7 @@ export namespace Prisma {
   /**
    * Employment findUnique
    */
-  export type EmploymentFindUniqueArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EmploymentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Employment
      */
@@ -1718,7 +1723,7 @@ export namespace Prisma {
   /**
    * Employment findUniqueOrThrow
    */
-  export type EmploymentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EmploymentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Employment
      */
@@ -1737,7 +1742,7 @@ export namespace Prisma {
   /**
    * Employment findFirst
    */
-  export type EmploymentFindFirstArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EmploymentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Employment
      */
@@ -1786,7 +1791,7 @@ export namespace Prisma {
   /**
    * Employment findFirstOrThrow
    */
-  export type EmploymentFindFirstOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EmploymentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Employment
      */
@@ -1835,7 +1840,7 @@ export namespace Prisma {
   /**
    * Employment findMany
    */
-  export type EmploymentFindManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EmploymentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Employment
      */
@@ -1879,7 +1884,7 @@ export namespace Prisma {
   /**
    * Employment create
    */
-  export type EmploymentCreateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EmploymentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Employment
      */
@@ -1898,7 +1903,7 @@ export namespace Prisma {
   /**
    * Employment createMany
    */
-  export type EmploymentCreateManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EmploymentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * The data used to create many Employments.
      */
@@ -1909,7 +1914,7 @@ export namespace Prisma {
   /**
    * Employment update
    */
-  export type EmploymentUpdateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EmploymentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Employment
      */
@@ -1932,7 +1937,7 @@ export namespace Prisma {
   /**
    * Employment updateMany
    */
-  export type EmploymentUpdateManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EmploymentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * The data used to update Employments.
      */
@@ -1947,7 +1952,7 @@ export namespace Prisma {
   /**
    * Employment upsert
    */
-  export type EmploymentUpsertArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EmploymentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Employment
      */
@@ -1974,7 +1979,7 @@ export namespace Prisma {
   /**
    * Employment delete
    */
-  export type EmploymentDeleteArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EmploymentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Employment
      */
@@ -1993,7 +1998,7 @@ export namespace Prisma {
   /**
    * Employment deleteMany
    */
-  export type EmploymentDeleteManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EmploymentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Filter which Employments to delete
      */
@@ -2004,7 +2009,7 @@ export namespace Prisma {
   /**
    * Employment findRaw
    */
-  export type EmploymentFindRawArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EmploymentFindRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
      */
@@ -2019,7 +2024,7 @@ export namespace Prisma {
   /**
    * Employment aggregateRaw
    */
-  export type EmploymentAggregateRawArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EmploymentAggregateRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
      */
@@ -2034,7 +2039,7 @@ export namespace Prisma {
   /**
    * Employment.positions
    */
-  export type Employment$positionsArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type Employment$positionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Position
      */
@@ -2055,7 +2060,7 @@ export namespace Prisma {
   /**
    * Employment without action
    */
-  export type EmploymentDefaultArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EmploymentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Employment
      */
@@ -2157,7 +2162,7 @@ export namespace Prisma {
     _all?: true
   }
 
-  export type PositionAggregateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type PositionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Filter which Position to aggregate.
      */
@@ -2229,7 +2234,7 @@ export namespace Prisma {
 
 
 
-  export type PositionGroupByArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type PositionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: PositionWhereInput
     orderBy?: PositionOrderByWithAggregationInput | PositionOrderByWithAggregationInput[]
     by: PositionScalarFieldEnum[] | PositionScalarFieldEnum
@@ -2273,7 +2278,7 @@ export namespace Prisma {
     >
 
 
-  export type PositionSelect<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type PositionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     title?: boolean
     employmentId?: boolean
@@ -2296,17 +2301,17 @@ export namespace Prisma {
     index?: boolean
   }
 
-  export type PositionInclude<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type PositionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     employment?: boolean | EmploymentDefaultArgs<ExtArgs>
   }
 
 
-  export type $PositionPayload<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type $PositionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Position"
     objects: {
       employment: Prisma.$EmploymentPayload<ExtArgs>
     }
-    scalars: $Extensions.GetResult<{
+    scalars: $Extensions.GetPayloadResult<{
       id: string
       title: string | null
       employmentId: string
@@ -2322,12 +2327,12 @@ export namespace Prisma {
 
   type PositionGetPayload<S extends boolean | null | undefined | PositionDefaultArgs> = $Result.GetResult<Prisma.$PositionPayload, S>
 
-  type PositionCountArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = 
-    Omit<PositionFindManyArgs, 'select' | 'include'> & {
+  type PositionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<PositionFindManyArgs, 'select' | 'include' | 'distinct'> & {
       select?: PositionCountAggregateInputType | true
     }
 
-  export interface PositionDelegate<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> {
+  export interface PositionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
     [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Position'], meta: { name: 'Position' } }
     /**
      * Find zero or one Position that matches the filter.
@@ -2704,7 +2709,7 @@ export namespace Prisma {
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__PositionClient<T, Null = never, ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__PositionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: 'PrismaPromise';
 
     employment<T extends EmploymentDefaultArgs<ExtArgs> = {}>(args?: Subset<T, EmploymentDefaultArgs<ExtArgs>>): Prisma__EmploymentClient<$Result.GetResult<Prisma.$EmploymentPayload<ExtArgs>, T, 'findUniqueOrThrow'> | Null, Null, ExtArgs>;
@@ -2753,7 +2758,7 @@ export namespace Prisma {
   /**
    * Position findUnique
    */
-  export type PositionFindUniqueArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type PositionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Position
      */
@@ -2772,7 +2777,7 @@ export namespace Prisma {
   /**
    * Position findUniqueOrThrow
    */
-  export type PositionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type PositionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Position
      */
@@ -2791,7 +2796,7 @@ export namespace Prisma {
   /**
    * Position findFirst
    */
-  export type PositionFindFirstArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type PositionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Position
      */
@@ -2840,7 +2845,7 @@ export namespace Prisma {
   /**
    * Position findFirstOrThrow
    */
-  export type PositionFindFirstOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type PositionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Position
      */
@@ -2889,7 +2894,7 @@ export namespace Prisma {
   /**
    * Position findMany
    */
-  export type PositionFindManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type PositionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Position
      */
@@ -2933,7 +2938,7 @@ export namespace Prisma {
   /**
    * Position create
    */
-  export type PositionCreateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type PositionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Position
      */
@@ -2952,7 +2957,7 @@ export namespace Prisma {
   /**
    * Position createMany
    */
-  export type PositionCreateManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type PositionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * The data used to create many Positions.
      */
@@ -2963,7 +2968,7 @@ export namespace Prisma {
   /**
    * Position update
    */
-  export type PositionUpdateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type PositionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Position
      */
@@ -2986,7 +2991,7 @@ export namespace Prisma {
   /**
    * Position updateMany
    */
-  export type PositionUpdateManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type PositionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * The data used to update Positions.
      */
@@ -3001,7 +3006,7 @@ export namespace Prisma {
   /**
    * Position upsert
    */
-  export type PositionUpsertArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type PositionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Position
      */
@@ -3028,7 +3033,7 @@ export namespace Prisma {
   /**
    * Position delete
    */
-  export type PositionDeleteArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type PositionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Position
      */
@@ -3047,7 +3052,7 @@ export namespace Prisma {
   /**
    * Position deleteMany
    */
-  export type PositionDeleteManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type PositionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Filter which Positions to delete
      */
@@ -3058,7 +3063,7 @@ export namespace Prisma {
   /**
    * Position findRaw
    */
-  export type PositionFindRawArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type PositionFindRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
      */
@@ -3073,7 +3078,7 @@ export namespace Prisma {
   /**
    * Position aggregateRaw
    */
-  export type PositionAggregateRawArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type PositionAggregateRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
      */
@@ -3088,7 +3093,7 @@ export namespace Prisma {
   /**
    * Position without action
    */
-  export type PositionDefaultArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type PositionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Position
      */
@@ -3162,7 +3167,7 @@ export namespace Prisma {
     _all?: true
   }
 
-  export type EducationAggregateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EducationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Filter which Education to aggregate.
      */
@@ -3222,7 +3227,7 @@ export namespace Prisma {
 
 
 
-  export type EducationGroupByArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EducationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: EducationWhereInput
     orderBy?: EducationOrderByWithAggregationInput | EducationOrderByWithAggregationInput[]
     by: EducationScalarFieldEnum[] | EducationScalarFieldEnum
@@ -3259,7 +3264,7 @@ export namespace Prisma {
     >
 
 
-  export type EducationSelect<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type EducationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     title?: boolean
     link?: boolean
@@ -3276,10 +3281,10 @@ export namespace Prisma {
   }
 
 
-  export type $EducationPayload<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type $EducationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Education"
     objects: {}
-    scalars: $Extensions.GetResult<{
+    scalars: $Extensions.GetPayloadResult<{
       id: string
       title: string | null
       link: string | null
@@ -3292,12 +3297,12 @@ export namespace Prisma {
 
   type EducationGetPayload<S extends boolean | null | undefined | EducationDefaultArgs> = $Result.GetResult<Prisma.$EducationPayload, S>
 
-  type EducationCountArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = 
-    Omit<EducationFindManyArgs, 'select' | 'include'> & {
+  type EducationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<EducationFindManyArgs, 'select' | 'include' | 'distinct'> & {
       select?: EducationCountAggregateInputType | true
     }
 
-  export interface EducationDelegate<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> {
+  export interface EducationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
     [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Education'], meta: { name: 'Education' } }
     /**
      * Find zero or one Education that matches the filter.
@@ -3674,7 +3679,7 @@ export namespace Prisma {
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__EducationClient<T, Null = never, ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__EducationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: 'PrismaPromise';
 
 
@@ -3719,7 +3724,7 @@ export namespace Prisma {
   /**
    * Education findUnique
    */
-  export type EducationFindUniqueArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EducationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Education
      */
@@ -3734,7 +3739,7 @@ export namespace Prisma {
   /**
    * Education findUniqueOrThrow
    */
-  export type EducationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EducationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Education
      */
@@ -3749,7 +3754,7 @@ export namespace Prisma {
   /**
    * Education findFirst
    */
-  export type EducationFindFirstArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EducationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Education
      */
@@ -3794,7 +3799,7 @@ export namespace Prisma {
   /**
    * Education findFirstOrThrow
    */
-  export type EducationFindFirstOrThrowArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EducationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Education
      */
@@ -3839,7 +3844,7 @@ export namespace Prisma {
   /**
    * Education findMany
    */
-  export type EducationFindManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EducationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Education
      */
@@ -3879,7 +3884,7 @@ export namespace Prisma {
   /**
    * Education create
    */
-  export type EducationCreateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EducationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Education
      */
@@ -3894,7 +3899,7 @@ export namespace Prisma {
   /**
    * Education createMany
    */
-  export type EducationCreateManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EducationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * The data used to create many Educations.
      */
@@ -3905,7 +3910,7 @@ export namespace Prisma {
   /**
    * Education update
    */
-  export type EducationUpdateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EducationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Education
      */
@@ -3924,7 +3929,7 @@ export namespace Prisma {
   /**
    * Education updateMany
    */
-  export type EducationUpdateManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EducationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * The data used to update Educations.
      */
@@ -3939,7 +3944,7 @@ export namespace Prisma {
   /**
    * Education upsert
    */
-  export type EducationUpsertArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EducationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Education
      */
@@ -3962,7 +3967,7 @@ export namespace Prisma {
   /**
    * Education delete
    */
-  export type EducationDeleteArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EducationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Education
      */
@@ -3977,7 +3982,7 @@ export namespace Prisma {
   /**
    * Education deleteMany
    */
-  export type EducationDeleteManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EducationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Filter which Educations to delete
      */
@@ -3988,7 +3993,7 @@ export namespace Prisma {
   /**
    * Education findRaw
    */
-  export type EducationFindRawArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EducationFindRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
      */
@@ -4003,7 +4008,7 @@ export namespace Prisma {
   /**
    * Education aggregateRaw
    */
-  export type EducationAggregateRawArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EducationAggregateRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
      */
@@ -4018,7 +4023,7 @@ export namespace Prisma {
   /**
    * Education without action
    */
-  export type EducationDefaultArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+  export type EducationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Education
      */
@@ -5138,19 +5143,19 @@ export namespace Prisma {
     /**
      * @deprecated Use EmploymentCountOutputTypeDefaultArgs instead
      */
-    export type EmploymentCountOutputTypeArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = EmploymentCountOutputTypeDefaultArgs<ExtArgs>
+    export type EmploymentCountOutputTypeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = EmploymentCountOutputTypeDefaultArgs<ExtArgs>
     /**
      * @deprecated Use EmploymentDefaultArgs instead
      */
-    export type EmploymentArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = EmploymentDefaultArgs<ExtArgs>
+    export type EmploymentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = EmploymentDefaultArgs<ExtArgs>
     /**
      * @deprecated Use PositionDefaultArgs instead
      */
-    export type PositionArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = PositionDefaultArgs<ExtArgs>
+    export type PositionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = PositionDefaultArgs<ExtArgs>
     /**
      * @deprecated Use EducationDefaultArgs instead
      */
-    export type EducationArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = EducationDefaultArgs<ExtArgs>
+    export type EducationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = EducationDefaultArgs<ExtArgs>
 
   /**
    * Batch Payload for updateMany & deleteMany & createMany
