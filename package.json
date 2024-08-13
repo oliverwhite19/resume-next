@@ -12,6 +12,7 @@
     "pretty": "prettier --write \"./**/*.{js,jsx,mjs,cjs,ts,tsx,json}\""
   },
   "dependencies": {
+    "@auth0/auth0-react": "^2.2.4",
     "@emotion/core": "^11.0.0",
     "@emotion/react": "^11.11.1",
     "@emotion/server": "^11.11.0",
@@ -19,6 +20,7 @@
     "@mantine/core": "^6.0.21",
     "@mantine/hooks": "^6.0.21",
     "@mantine/next": "^6.0.21",
+    "@next/env": "^14.2.5",
     "@prisma/client": "^5.4.2",
     "babel-plugin-superjson-next": "^0.4.5",
     "bun-types": "^1.0.4",
