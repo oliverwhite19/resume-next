@@ -17,7 +17,6 @@ export default async function handler(
     where: { userId: user.sub },
   });
 
-  console.log({ dbUser });
   if (dbUser) {
     res.status(200).json({ user: dbUser });
     return;
@@ -28,7 +27,6 @@ export default async function handler(
       userId: user.sub,
     },
   });
-  console.log({ createdUser });
 
   res.status(200).json({ user: createdUser });
 }
