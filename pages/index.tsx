@@ -6,7 +6,6 @@ import type { Education as EducationType } from '../prisma/generated/client';
 import { PrismaClient } from '../prisma/generated/client';
 import { useStyles } from '../styles/index.styles';
 import { EmploymentWithPositions } from '../types';
-import { useUser } from '@auth0/nextjs-auth0/client';
 
 const Resume = ({
   employment,
@@ -16,11 +15,8 @@ const Resume = ({
   education: EducationType[];
 }) => {
   const { classes } = useStyles();
-  const { user, error, isLoading } = useUser();
-  console.log(user);
   return (
     <>
-      <a href="/api/auth/login">Login</a>
       <Header withDescription />
       <section className={classes.section}>
         <WorkExperience employment={employment} />
