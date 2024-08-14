@@ -1,10 +1,23 @@
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { Anchor, Flex, Paper } from '@mantine/core';
 import { useStyles } from './TopBar.styles';
+import { useEffect } from 'react';
 
 const TopBar = () => {
   const { user } = useUser();
   const { classes } = useStyles();
+
+  useEffect(() => {
+    if (user?.sub) {
+      fetch('/api/user/getOrCreate', {
+        method: 'POST',
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+        });
+    }
+  }, [user]);
   if (!user) {
     return null;
   }

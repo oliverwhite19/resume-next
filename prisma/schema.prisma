@@ -39,6 +39,6 @@ model Education {
 
 model User {
   id      String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId  String
+  userId  String  @unique
   isAdmin Boolean @default(false)
 }
