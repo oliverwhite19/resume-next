@@ -10,6 +10,7 @@ import {
 import { EmploymentWithPositions } from '../../types';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
+import Link from 'next/link';
 
 const Employment = ({
   employment,
@@ -19,6 +20,7 @@ const Employment = ({
   remove: (id: string) => Promise<void>;
 }) => {
   const {
+    id,
     company,
     descriptor,
     companyLink,
@@ -110,6 +112,8 @@ const Employment = ({
         </Button>
         <Button onClick={saveCompany}>Save</Button>
       </Group>
+      <Space h="md" />
+      {id && <Link href={`/administration/${id}`}>View Details</Link>}
       {alert && (
         <Modal
           opened={alert}
