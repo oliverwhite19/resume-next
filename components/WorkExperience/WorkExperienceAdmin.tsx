@@ -22,6 +22,7 @@ const WorkExperienceAdmin = ({
       });
     }
     setManagedEmployments(managedEmployments.filter((_, i) => i !== index));
+    return;
   };
 
   return (

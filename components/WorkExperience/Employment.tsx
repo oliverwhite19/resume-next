@@ -9,13 +9,14 @@ import {
 } from '@mantine/core';
 import { EmploymentWithPositions } from '../../types';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 
 const Employment = ({
   employment,
   remove,
 }: {
   employment?: EmploymentWithPositions;
-  remove: (id: string) => void;
+  remove: (id: string) => Promise<void>;
 }) => {
   const {
     company,
@@ -37,23 +38,34 @@ const Employment = ({
   const [deleteValidation, setDeleteValidation] = useState('');
 
   const saveCompany = async () => {
-    await fetch('/api/employment/updateOrCreate', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        id: employment?.id,
-        name: companyName,
-        link,
-        descriptor: companyDescriptor,
-        index: companyPosition,
+    toast.promise(
+      fetch('/api/employment/updateOrCreate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: employment?.id,
+          name: companyName,
+          link,
+          descriptor: companyDescriptor,
+          index: companyPosition,
+        }),
       }),
-    });
+      {
+        loading: 'Saving...',
+        success: 'Saved!',
+        error: 'There was an error',
+      },
+    );
   };
 
   const deleteCompany = async () => {
-    await remove(employment?.id);
+    toast.promise(remove(employment?.id), {
+      loading: 'Deleting...',
+      success: 'Deleted!',
+      error: 'There was an error',
+    });
     setAlert(false);
   };
 
