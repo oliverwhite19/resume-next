@@ -10,7 +10,6 @@ const TopBar = () => {
     return null;
   }
 
-  console.log(user);
   return (
     <Paper shadow="xl" radius="md" withBorder>
       <Flex

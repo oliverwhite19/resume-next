@@ -74,11 +74,12 @@ const Header = ({ withDescription }: { withDescription: boolean }) => {
               alt="A picture of me!"
             />
             <P>
-              I am Oliver White and I am a Software Developer with 5 years of
-              experience leading and contributing to a wide variety of projects.
-              I have a degree in Computer Engineering with a specialization in
-              Software Engineering. I am experienced with many different fields
-              from computer hardware to cloud-based software design!
+              My name is Oliver White and I am a Senior Software Developer with
+              8 years of experience leading and contributing to a wide variety
+              of projects. I have a degree in Computer Engineering with a
+              specialization in Software Engineering. I am experienced with many
+              different fields from computer hardware to cloud-based software
+              design!
             </P>
           </div>
         </>
