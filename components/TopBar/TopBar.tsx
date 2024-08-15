@@ -2,6 +2,7 @@ import { Anchor, Flex, Paper } from '@mantine/core';
 import { useStyles } from './TopBar.styles';
 import { useContext } from 'react';
 import UserContext from '../UserContext/UserContext';
+import Link from 'next/link';
 
 const TopBar = () => {
   const { user } = useContext(UserContext);
@@ -22,7 +23,8 @@ const TopBar = () => {
         maw={960}
         className={classes.buttonContainer}
       >
-        {user.isAdmin && <Anchor href="/api/auth/logout">Administrator</Anchor>}
+        {user.isAdmin && <Link href="/">Home</Link>}
+        {user.isAdmin && <Link href="/administration">Administration</Link>}
         <Anchor href="/api/auth/logout">Logout</Anchor>
       </Flex>
     </Paper>

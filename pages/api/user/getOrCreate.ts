@@ -18,8 +18,7 @@ export default async function handler(
   });
 
   if (dbUser) {
-    res.status(200).json({ user: dbUser });
-    return;
+    return res.status(200).json({ user: dbUser });
   }
 
   const createdUser = await prisma.user.create({
@@ -28,5 +27,5 @@ export default async function handler(
     },
   });
 
-  res.status(200).json({ user: createdUser });
+  return res.status(200).json({ user: createdUser });
 }

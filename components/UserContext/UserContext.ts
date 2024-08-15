@@ -1,3 +1,4 @@
+import { UserProfile } from '@auth0/nextjs-auth0/client';
 import { createContext } from 'react';
 
 const defaultValue = {
@@ -5,7 +6,7 @@ const defaultValue = {
   setUser: () => {},
 };
 const UserContext = createContext<{
-  user: { isAdmin: boolean } | null;
+  user: ({ isAdmin: boolean } & UserProfile) | null;
   setUser: (user: { isAdmin: boolean } | null) => void;
 }>(defaultValue);
 
