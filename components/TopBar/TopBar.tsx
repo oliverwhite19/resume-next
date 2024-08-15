@@ -1,4 +1,4 @@
-import { Anchor, Flex, Paper } from '@mantine/core';
+import { Anchor, Flex, Paper, Space } from '@mantine/core';
 import { useStyles } from './TopBar.styles';
 import { useContext } from 'react';
 import UserContext from '../UserContext/UserContext';
@@ -8,7 +8,7 @@ const TopBar = () => {
   const { user } = useContext(UserContext);
   const { classes } = useStyles();
   if (!user) {
-    return null;
+    return <Space h="xl" />;
   }
 
   return (
