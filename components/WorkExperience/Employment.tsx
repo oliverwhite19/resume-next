@@ -1,4 +1,12 @@
-import { Alert, Button, Group, Input, Space, Textarea } from '@mantine/core';
+import {
+  Alert,
+  Button,
+  Group,
+  Input,
+  NumberInput,
+  Space,
+  Textarea,
+} from '@mantine/core';
 import { EmploymentWithPositions } from '../../types';
 import { useState } from 'react';
 
@@ -9,7 +17,12 @@ const Employment = ({
   employment?: EmploymentWithPositions;
   remove: (id: string) => void;
 }) => {
-  const { company, descriptor, companyLink } = employment ?? {};
+  const {
+    company,
+    descriptor,
+    companyLink,
+    index: position,
+  } = employment ?? {};
 
   // Alert management
   const [alert, setAlert] = useState(false);
@@ -18,6 +31,7 @@ const Employment = ({
   const [companyName, setCompanyName] = useState(company);
   const [link, setLink] = useState(companyLink);
   const [companyDescriptor, setCompanyDescriptor] = useState(descriptor);
+  const [companyPosition, setCompanyPosition] = useState(position);
 
   const saveCompany = async () => {
     await fetch('/api/employment/updateOrCreate', {
@@ -30,6 +44,7 @@ const Employment = ({
         name: companyName,
         link,
         descriptor: companyDescriptor,
+        index: companyPosition,
       }),
     });
   };
@@ -65,6 +80,14 @@ const Employment = ({
           onChange={(e) => setLink(e.target.value)}
         />
       </Input.Wrapper>
+      <Space h="md" />
+      <NumberInput
+        label="Resume position"
+        placeholder="Position"
+        value={companyPosition}
+        onChange={(value) => setCompanyPosition(value)}
+        min={0}
+      />
       <Space h="md" />
       <Group>
         <Button color="red" onClick={() => setAlert(true)}>

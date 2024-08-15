@@ -12,17 +12,17 @@ export default async function handler(
     return;
   }
 
-  const { id, name, link, descriptor } = req.body;
+  const { id, name, link, descriptor, index } = req.body;
 
   let employment;
   if (id) {
     employment = await prisma.employment.update({
       where: { id },
-      data: { company: name, companyLink: link, descriptor },
+      data: { company: name, companyLink: link, descriptor, index },
     });
   } else {
     employment = await prisma.employment.create({
-      data: { company: name, companyLink: link, descriptor },
+      data: { company: name, companyLink: link, descriptor, index },
     });
   }
   return res.status(200).json({ employment });
