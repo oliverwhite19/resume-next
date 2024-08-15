@@ -1,26 +1,16 @@
-import { useUser } from '@auth0/nextjs-auth0/client';
 import { Anchor, Flex, Paper } from '@mantine/core';
 import { useStyles } from './TopBar.styles';
-import { useEffect } from 'react';
+import { useContext } from 'react';
+import UserContext from '../UserContext/UserContext';
 
 const TopBar = () => {
-  const { user } = useUser();
+  const { user } = useContext(UserContext);
   const { classes } = useStyles();
-
-  useEffect(() => {
-    if (user?.sub) {
-      fetch('/api/user/getOrCreate', {
-        method: 'POST',
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data);
-        });
-    }
-  }, [user]);
   if (!user) {
     return null;
   }
+
+  console.log(user);
   return (
     <Paper shadow="xl" radius="md" withBorder>
       <Flex
@@ -33,6 +23,7 @@ const TopBar = () => {
         maw={960}
         className={classes.buttonContainer}
       >
+        {user.isAdmin && <Anchor href="/api/auth/logout">Administrator</Anchor>}
         <Anchor href="/api/auth/logout">Logout</Anchor>
       </Flex>
     </Paper>
