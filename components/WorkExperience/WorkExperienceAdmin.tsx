@@ -1,22 +1,52 @@
-import { Divider, Space } from '@mantine/core';
+import { Button, Divider, Space } from '@mantine/core';
 import { EmploymentWithPositions } from '../../types';
 import Employment from './Employment';
+import { IconPlus } from '@tabler/icons-react';
+import { useState } from 'react';
 
 const WorkExperienceAdmin = ({
   employment,
 }: {
   employment: EmploymentWithPositions[];
 }) => {
+  const [managedEmployments, setManagedEmployments] = useState(employment);
+
+  const addEmployment = () => {
+    setManagedEmployments([...managedEmployments, {}]);
+  };
+
+  const deleteEmployment = (index: number) => async (id: string) => {
+    if (id) {
+      await fetch('/api/employment/delete', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id,
+        }),
+      });
+    }
+    setManagedEmployments(managedEmployments.filter((_, i) => i !== index));
+  };
+
   return (
     <div>
       <Space h="md" />
-      {employment?.map((company, index) => (
+      {managedEmployments?.map((company, index) => (
         <>
-          <Employment key={index} employment={company} />
-
-          {index < employment.length - 1 && <Divider my="md" />}
+          <Employment
+            key={index}
+            employment={company}
+            remove={deleteEmployment(index)}
+          />
+          <Divider my="md" />
         </>
       ))}
+      <Space h="md" />
+      <Button variant="default" onClick={addEmployment}>
+        <IconPlus size={18} stroke={1.5} />
+      </Button>
     </div>
   );
 };

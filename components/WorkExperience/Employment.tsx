@@ -4,8 +4,10 @@ import { useState } from 'react';
 
 const Employment = ({
   employment,
+  remove,
 }: {
   employment?: EmploymentWithPositions;
+  remove: (id: string) => void;
 }) => {
   const { company, descriptor, companyLink } = employment ?? {};
 
@@ -33,15 +35,7 @@ const Employment = ({
   };
 
   const deleteCompany = async () => {
-    await fetch('/api/employment/delete', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        id: employment?.id,
-      }),
-    });
+    await remove(employment?.id);
     setAlert(false);
   };
 

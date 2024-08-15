@@ -22,6 +22,8 @@
     "@mantine/next": "^6.0.21",
     "@next/env": "^14.2.5",
     "@prisma/client": "^5.4.2",
+    "@tabler/core": "^1.0.0-beta20",
+    "@tabler/icons-react": "^3.12.0",
     "babel-plugin-superjson-next": "^0.4.5",
     "bun-types": "^1.0.4",
     "date-fns": "^2.30.0",
