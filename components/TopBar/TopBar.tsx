@@ -22,7 +22,8 @@ const TopBar = () => {
         maw={960}
         className={classes.buttonContainer}
       >
-        {user.isAdmin && <Anchor href="/api/auth/logout">Administrator</Anchor>}
+        {user.isAdmin && <Anchor href="/">Home</Anchor>}
+        {user.isAdmin && <Anchor href="/administration">Administration</Anchor>}
         <Anchor href="/api/auth/logout">Logout</Anchor>
       </Flex>
     </Paper>
