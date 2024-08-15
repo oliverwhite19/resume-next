@@ -2,7 +2,7 @@ import { Button, Divider, Space } from '@mantine/core';
 import { EmploymentWithPositions } from '../../types';
 import Employment from './Employment';
 import { IconPlus } from '@tabler/icons-react';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 
 const WorkExperienceAdmin = ({
   employment,
@@ -34,14 +34,10 @@ const WorkExperienceAdmin = ({
     <div>
       <Space h="md" />
       {managedEmployments?.map((company, index) => (
-        <>
-          <Employment
-            key={index}
-            employment={company}
-            remove={deleteEmployment(index)}
-          />
+        <Fragment key={`${index}${company?.id ?? ''}`}>
+          <Employment employment={company} remove={deleteEmployment(index)} />
           <Divider my="md" />
-        </>
+        </Fragment>
       ))}
       <Space h="md" />
       <Button variant="default" onClick={addEmployment}>
