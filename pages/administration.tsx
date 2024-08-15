@@ -43,7 +43,7 @@ export async function getStaticProps() {
       employment: employmentData,
       education: educationData,
     },
-    revalidate: 60,
+    revalidate: 10,
   };
 }
 

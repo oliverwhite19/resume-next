@@ -1,4 +1,4 @@
-import { Button, Group, Input, Space, Textarea } from '@mantine/core';
+import { Alert, Button, Group, Input, Space, Textarea } from '@mantine/core';
 import { EmploymentWithPositions } from '../../types';
 import { useState } from 'react';
 
@@ -9,9 +9,14 @@ const Employment = ({
 }) => {
   const { company, descriptor, companyLink } = employment ?? {};
 
+  // Alert management
+  const [alert, setAlert] = useState(false);
+
+  // Form management
   const [companyName, setCompanyName] = useState(company);
   const [link, setLink] = useState(companyLink);
   const [companyDescriptor, setCompanyDescriptor] = useState(descriptor);
+
   const saveCompany = async () => {
     await fetch('/api/employment/updateOrCreate', {
       method: 'POST',
@@ -25,6 +30,19 @@ const Employment = ({
         descriptor: companyDescriptor,
       }),
     });
+  };
+
+  const deleteCompany = async () => {
+    await fetch('/api/employment/delete', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: employment?.id,
+      }),
+    });
+    setAlert(false);
   };
 
   return (
@@ -55,11 +73,28 @@ const Employment = ({
       </Input.Wrapper>
       <Space h="md" />
       <Group>
-        <Button color="red" onClick={saveCompany}>
+        <Button color="red" onClick={() => setAlert(true)}>
           Delete
         </Button>
         <Button onClick={saveCompany}>Save</Button>
       </Group>
+      {alert && (
+        <>
+          <Space h="md" />
+          <Alert
+            variant="filled"
+            color="gray"
+            title="Are you sure you want to delete this job?"
+          >
+            <Group>
+              <Button color="red" onClick={deleteCompany}>
+                Confirm
+              </Button>
+              <Button onClick={() => setAlert(false)}>Cancel</Button>
+            </Group>
+          </Alert>
+        </>
+      )}
     </div>
   );
 };
