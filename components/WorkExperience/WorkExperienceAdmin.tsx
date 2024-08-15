@@ -17,14 +17,8 @@ const WorkExperienceAdmin = ({
 
   const deleteEmployment = (index: number) => async (id: string) => {
     if (id) {
-      await fetch('/api/employment/delete', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id,
-        }),
+      await fetch('/api/employment/delete/' + id, {
+        method: 'DELETE',
       });
     }
     setManagedEmployments(managedEmployments.filter((_, i) => i !== index));
