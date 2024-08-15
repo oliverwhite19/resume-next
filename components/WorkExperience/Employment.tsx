@@ -1,8 +1,8 @@
 import {
-  Alert,
   Button,
   Group,
   Input,
+  Modal,
   NumberInput,
   Space,
   Textarea,
@@ -28,10 +28,13 @@ const Employment = ({
   const [alert, setAlert] = useState(false);
 
   // Form management
-  const [companyName, setCompanyName] = useState(company);
-  const [link, setLink] = useState(companyLink);
-  const [companyDescriptor, setCompanyDescriptor] = useState(descriptor);
-  const [companyPosition, setCompanyPosition] = useState(position);
+  const [companyName, setCompanyName] = useState(company ?? '');
+  const [link, setLink] = useState(companyLink ?? '');
+  const [companyDescriptor, setCompanyDescriptor] = useState(descriptor ?? '');
+  const [companyPosition, setCompanyPosition] = useState(position ?? 0);
+
+  // Delete validation
+  const [deleteValidation, setDeleteValidation] = useState('');
 
   const saveCompany = async () => {
     await fetch('/api/employment/updateOrCreate', {
@@ -96,21 +99,32 @@ const Employment = ({
         <Button onClick={saveCompany}>Save</Button>
       </Group>
       {alert && (
-        <>
-          <Space h="md" />
-          <Alert
-            variant="filled"
-            color="gray"
-            title="Are you sure you want to delete this job?"
+        <Modal
+          opened={alert}
+          onClose={() => setAlert(false)}
+          title="Are you sure you want to delete this job?"
+        >
+          <Input.Wrapper
+            label={`Confirm by writing the company name: ${companyName}`}
           >
-            <Group>
-              <Button color="red" onClick={deleteCompany}>
-                Confirm
-              </Button>
-              <Button onClick={() => setAlert(false)}>Cancel</Button>
-            </Group>
-          </Alert>
-        </>
+            <Input
+              placeholder="Company name"
+              value={deleteValidation}
+              onChange={(e) => setDeleteValidation(e.target.value)}
+            />
+          </Input.Wrapper>
+          <Space h="md" />
+          <Group>
+            <Button
+              color="red"
+              onClick={deleteCompany}
+              disabled={deleteValidation !== companyName}
+            >
+              Confirm
+            </Button>
+            <Button onClick={() => setAlert(false)}>Cancel</Button>
+          </Group>
+        </Modal>
       )}
     </div>
   );
