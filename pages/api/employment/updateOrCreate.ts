@@ -7,6 +7,8 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   const prisma = new PrismaClient();
+
+  // Abstract all this into a function
   const { user } = (await getSession(req, res)) || {};
 
   if (!user) {
@@ -17,15 +19,18 @@ export default async function handler(
     where: { userId: user.sub },
   });
 
-  if (dbUser) {
-    return res.status(200).json({ user: dbUser });
+  if (!dbUser?.isAdmin) {
+    return res.status(401).json({ error: 'Unauthorized' });
   }
 
-  const createdUser = await prisma.user.create({
-    data: {
-      userId: user.sub,
-    },
-  });
+  // End abstract here
 
-  return res.status(200).json({ user: createdUser });
+  const { id, name, link, descriptor } = req.body;
+
+  const employment = await prisma.employment.upsert({
+    where: { id },
+    update: { company: name, companyLink: link, descriptor },
+    create: { company: name, companyLink: link, descriptor },
+  });
+  return res.status(200).json({ employment });
 }
