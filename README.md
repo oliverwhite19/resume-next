@@ -6,8 +6,7 @@
 <h1 align="center">
   Oliver White Resume
 </h1>
-<h2>NextJS Version</h2>
-## 🚀 Development
+<h2> 🚀 Development </h2>
 
 1.  **Add your env variables**
     Navigate into the sites directory and create an environment file
@@ -26,5 +25,5 @@
     Install packages and launch the site
 
     ```shell
-    bun && bun run dev
+    yarn && yarn dev
     ```
