@@ -14,7 +14,6 @@ export default class _Document extends Document {
           <link rel="icon" href="/favicon.ico" />
           <meta name="description" content="My resume and projects website" />
           <link rel="apple-touch-icon" href="/logo192.png" />
-          <link rel="stylesheet" href="/globals.css" />
         </Head>
         <body>
           <Main />

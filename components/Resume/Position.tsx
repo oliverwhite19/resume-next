@@ -70,7 +70,7 @@ const Position = ({ position }: { position: PositionType }) => {
               <Chip
                 className={classes.chip}
                 color={colours(tech)}
-                variant="light"
+                variant="outline"
                 key={index}
                 checked
               >
