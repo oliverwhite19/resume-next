@@ -6,7 +6,33 @@ import { H1, P } from '../Text';
 import { ContactModal } from './ContactModal';
 import { useStyles } from './Header.styles';
 
-const Header = ({ withDescription }: { withDescription: boolean }) => {
+type Props = (
+  | {
+      withDescription: false;
+      email?: string;
+      github?: string;
+      linkedin?: string;
+      description?: string;
+    }
+  | {
+      withDescription: true;
+      email: string;
+      github: string;
+      linkedin: string;
+      description: string;
+    }
+) & {
+  name: string;
+};
+
+const Header = ({
+  withDescription,
+  name,
+  email,
+  github,
+  linkedin,
+  description,
+}: Props) => {
   const { classes } = useStyles();
 
   const [opened, setOpened] = useState(false);
@@ -32,7 +58,7 @@ const Header = ({ withDescription }: { withDescription: boolean }) => {
             deg: 45,
           }}
         >
-          Oliver White
+          {name}
         </H1>
         {withDescription && (
           <div className={classes.buttonContainer}>
@@ -73,31 +99,26 @@ const Header = ({ withDescription }: { withDescription: boolean }) => {
               src="images/author_.jpg"
               alt="A picture of me!"
             />
-            <P>
-              My name is Oliver White and I am a Senior Software Developer with
-              8 years of experience leading and contributing to a wide variety
-              of projects. I have a degree in Computer Engineering with a
-              specialization in Software Engineering. I am experienced with many
-              different fields from computer hardware to cloud-based software
-              design!
-            </P>
+            <P>{description}</P>
           </div>
         </>
       )}
 
-      <Modal
-        opened={opened}
-        onClose={() => setOpened(false)}
-        title="Contact"
-        centered
-        overlayProps={{
-          color: theme.colors.gray[2],
-          opacity: 0.7,
-          blur: 9,
-        }}
-      >
-        <ContactModal />
-      </Modal>
+      {withDescription && (
+        <Modal
+          opened={opened}
+          onClose={() => setOpened(false)}
+          title="Contact"
+          centered
+          overlayProps={{
+            color: theme.colors.gray[2],
+            opacity: 0.7,
+            blur: 9,
+          }}
+        >
+          <ContactModal email={email} github={github} linkedin={linkedin} />
+        </Modal>
+      )}
     </Paper>
   );
 };

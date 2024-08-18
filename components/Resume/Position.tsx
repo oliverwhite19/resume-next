@@ -1,15 +1,15 @@
 import { Chip, Group, List, Space } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import { format } from 'date-fns';
+import { format, parse } from 'date-fns';
 import { Point } from 'tabler-icons-react';
-import type { Position as PositionType } from '../../prisma/generated/client';
 import { screenSizes } from '../../styles/theme';
 import { Smol } from '../Text';
 import { useStyles } from './Resume.styles';
+import type { Position as PositionType } from '../../types';
 
 const Position = ({ position }: { position: PositionType }) => {
   const { classes } = useStyles();
-  const { title, details, start, end, technologies } = position;
+  const { title, accomplishments, start, end, technologies } = position;
   const isSmallScreen = useMediaQuery(
     `(max-width: ${screenSizes.largeMobile}px)`,
   );
@@ -51,12 +51,14 @@ const Position = ({ position }: { position: PositionType }) => {
     <div className={classes.position}>
       <h3>{title}</h3>
       <Smol>
-        {start && format(start, 'LLLL yyy')} -{' '}
-        {end ? format(end, 'LLLL yyy') : 'Present'}
+        {start && format(parse(start, 'yyyy-MM-dd', new Date()), 'LLLL yyy')} -{' '}
+        {end
+          ? format(parse(end, 'yyyy-MM-dd', new Date()), 'LLLL yyy')
+          : 'Present'}
       </Smol>
       <Space h="lg" />
       <List icon={<Point size={16} strokeWidth={3} color={'#862d2e'} />}>
-        {details.map((detail, index) => (
+        {accomplishments?.map((detail, index) => (
           <List.Item key={index}>{detail}</List.Item>
         ))}
       </List>
@@ -64,7 +66,7 @@ const Position = ({ position }: { position: PositionType }) => {
       {!isSmallScreen && (
         <Chip.Group>
           <Group position="center">
-            {technologies.map((tech, index) => (
+            {technologies?.map((tech, index) => (
               <Chip
                 className={classes.chip}
                 color={colours(tech)}
