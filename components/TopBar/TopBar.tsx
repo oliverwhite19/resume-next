@@ -24,7 +24,6 @@ const TopBar = () => {
         className={classes.buttonContainer}
       >
         {user.isAdmin && <Link href="/">Home</Link>}
-        {user.isAdmin && <Link href="/administration">Administration</Link>}
         <Anchor href="/api/auth/logout">Logout</Anchor>
       </Flex>
     </Paper>

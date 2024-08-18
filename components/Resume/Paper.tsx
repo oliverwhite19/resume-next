@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
 import { Paper as MPaper, Space } from '@mantine/core';
-import { compareDesc } from 'date-fns';
-import type { Position as PositionType } from '../../prisma/generated/client';
+import { compareDesc, parse } from 'date-fns';
 import { P } from '../Text';
 import { Position } from './Position';
 import { useStyles } from './Resume.styles';
+import type { Position as PositionType } from '../../types';
 
 const CenteredP = styled(P)`
   text-align: center;
@@ -37,7 +37,12 @@ const Paper = ({ link, title, description, positions }: Props) => {
       <Space h="lg" />
       {positions
         ?.sort((one, two) =>
-          one.end && two.start ? compareDesc(one.end, two.start) : -1,
+          one.end && two.start
+            ? compareDesc(
+                parse(one.end, 'yyyy-MM-dd', new Date()),
+                parse(two.start, 'yyyy-MM-dd', new Date()),
+              )
+            : -1,
         )
         ?.map((position) => (
           <Position key={position.title} position={position} />

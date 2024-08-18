@@ -1,12 +1,12 @@
-import { EmploymentWithPositions } from '../../types';
+import { Employer } from '../../types';
 import { Paper } from './Paper';
 
-const Job = ({ job }: { job: EmploymentWithPositions }) => {
+const Job = ({ job }: { job: Employer }) => {
   return (
     <Paper
-      link={job.companyLink ?? ''}
-      title={job.company ?? ''}
-      description={job.descriptor ?? ''}
+      link={job.url ?? ''}
+      title={job.name ?? ''}
+      description={job.description ?? ''}
       positions={job.positions}
     />
   );

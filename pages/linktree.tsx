@@ -11,7 +11,7 @@ import { Header } from '../components/Header/Header';
 const Linktree = () => {
   return (
     <>
-      <Header withDescription={false} />
+      <Header withDescription={false} name="Olive White" />
       <Space h="lg" />
       <Paper shadow="xl" radius="md" p="md" withBorder>
         <Button.Group orientation="vertical">

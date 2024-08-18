@@ -15,7 +15,12 @@ const buttonStyle = () => ({
   },
 });
 
-const ContactModal = () => {
+interface Props {
+  email: string;
+  github: string;
+  linkedin: string;
+}
+const ContactModal = ({ email, github, linkedin }: Props) => {
   const { classes } = useStyles();
   return (
     <Button.Group
@@ -30,15 +35,13 @@ const ContactModal = () => {
         size="xl"
         styles={buttonStyle}
         component="a"
-        href="mailto:oliverwhite93@gmail.com"
+        href={`mailto:${email}`}
         target="_blank"
         rel="noopener noreferrer"
       >
         <div className={classes.contactModalButtonContents}>
           <p className={classes.contactModalButtonAction}>Email</p>
-          <p className={classes.contactModalButtonAccount}>
-            oliverwhite93@gmail.com
-          </p>
+          <p className={classes.contactModalButtonAccount}>{email}</p>
         </div>
       </Button>
       <Button
@@ -49,7 +52,7 @@ const ContactModal = () => {
         size="lg"
         styles={buttonStyle}
         component="a"
-        href="https://github.com/oliverwhite19"
+        href={github}
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -66,7 +69,7 @@ const ContactModal = () => {
         size="lg"
         styles={buttonStyle}
         component="a"
-        href="https://www.linkedin.com/in/oliver-white-453a1221a/"
+        href={linkedin}
         target="_blank"
         rel="noopener noreferrer"
       >
