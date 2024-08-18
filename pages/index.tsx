@@ -46,8 +46,6 @@ export async function getStaticProps() {
     },
   });
 
-  console.log(process.env);
-
   const params = {
     Bucket: process.env.AWS_BUCKET,
     Key: process.env.CONFIG_KEY,
