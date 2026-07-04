@@ -1,4 +1,4 @@
-import { Chip, Group, List, Space } from '@mantine/core';
+import { Badge, Group, List, Space } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { format, parse } from 'date-fns';
 import { IconPoint } from '@tabler/icons-react';
@@ -63,21 +63,18 @@ const Position = ({ position }: { position: PositionType }) => {
       </List>
       <Space h="lg" />
       {!isSmallScreen && (
-        <Chip.Group>
-          <Group justify="center">
-            {technologies?.map((tech, index) => (
-              <Chip
-                className={classes.chip}
-                color={colours(tech)}
-                variant="outline"
-                key={index}
-                checked
-              >
-                {tech}
-              </Chip>
-            ))}
-          </Group>
-        </Chip.Group>
+        <Group justify="center">
+          {technologies?.map((tech, index) => (
+            <Badge
+              className={classes.badge}
+              color={colours(tech)}
+              variant="outline"
+              key={index}
+            >
+              {tech}
+            </Badge>
+          ))}
+        </Group>
       )}
     </div>
   );

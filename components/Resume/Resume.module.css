@@ -18,12 +18,8 @@
   border-left: solid 3px var(--mantine-color-red-8);
 }
 
-.chip label {
-  cursor: initial;
-}
-
-.chip label > span {
-  display: none;
+.badge {
+  text-transform: none;
 }
 
 .paperStyles {

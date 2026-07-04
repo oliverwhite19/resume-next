@@ -1,5 +1,5 @@
 .h1 {
-  font-size: var(--mantine-font-size-xl);
+  font-size: var(--mantine-h1-font-size);
   font-family: Oxygen, sans-serif;
 }
 
