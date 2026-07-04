@@ -1,39 +1,30 @@
 import { Button } from '@mantine/core';
-import { BrandGithub, BrandLinkedin, Mail } from 'tabler-icons-react';
-import { useStyles } from './Header.styles';
-
-const buttonStyle = () => ({
-  root: {
-    paddingLeft: 20,
-    '& > *': {
-      justifyContent: 'flex-start',
-      marginLeft: '3rem',
-    },
-  },
-  leftIcon: {
-    marginRight: '0.5rem',
-  },
-});
+import {
+  IconBrandGithub,
+  IconBrandLinkedin,
+  IconMail,
+} from '@tabler/icons-react';
+import classes from './Header.module.css';
 
 interface Props {
   email: string;
   github: string;
   linkedin: string;
 }
+
 const ContactModal = ({ email, github, linkedin }: Props) => {
-  const { classes } = useStyles();
   return (
     <Button.Group
-      sx={{ width: '50%', minWidth: '20rem', margin: 'auto' }}
+      className={classes.contactButtonGroup}
       orientation="vertical"
     >
       <Button
-        leftIcon={<Mail size={60} />}
+        leftSection={<IconMail size={60} className={classes.contactButtonIcon} />}
         variant="outline"
         color="red"
         radius="xs"
         size="xl"
-        styles={buttonStyle}
+        className={classes.contactButton}
         component="a"
         href={`mailto:${email}`}
         target="_blank"
@@ -45,12 +36,14 @@ const ContactModal = ({ email, github, linkedin }: Props) => {
         </div>
       </Button>
       <Button
-        leftIcon={<BrandGithub size={60} />}
+        leftSection={
+          <IconBrandGithub size={60} className={classes.contactButtonIcon} />
+        }
         variant="outline"
         color="red"
         radius="xs"
         size="lg"
-        styles={buttonStyle}
+        className={classes.contactButton}
         component="a"
         href={github}
         target="_blank"
@@ -62,12 +55,14 @@ const ContactModal = ({ email, github, linkedin }: Props) => {
         </div>
       </Button>
       <Button
-        leftIcon={<BrandLinkedin size={60} />}
+        leftSection={
+          <IconBrandLinkedin size={60} className={classes.contactButtonIcon} />
+        }
         variant="outline"
         color="red"
         radius="xs"
         size="lg"
-        styles={buttonStyle}
+        className={classes.contactButton}
         component="a"
         href={linkedin}
         target="_blank"

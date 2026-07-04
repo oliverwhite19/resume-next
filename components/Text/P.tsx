@@ -1,12 +1,16 @@
 import React from 'react';
-import { useStyles } from './text.styles';
+import classes from './Text.module.css';
 
-const P = ({ children, ...props }: { children: React.ReactNode }) => {
-  const { classes } = useStyles();
-  return (
-    <p className={classes.p} {...props}>
-      {children}
-    </p>
-  );
-};
+const P = ({
+  children,
+  className,
+  ...props
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) => (
+  <p className={`${classes.p} ${className ?? ''}`.trim()} {...props}>
+    {children}
+  </p>
+);
 export { P };

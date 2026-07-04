@@ -1,14 +1,13 @@
 import { Chip, Group, List, Space } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { format, parse } from 'date-fns';
-import { Point } from 'tabler-icons-react';
+import { IconPoint } from '@tabler/icons-react';
 import { screenSizes } from '../../styles/theme';
 import { Smol } from '../Text';
-import { useStyles } from './Resume.styles';
+import classes from './Resume.module.css';
 import type { Position as PositionType } from '../../types';
 
 const Position = ({ position }: { position: PositionType }) => {
-  const { classes } = useStyles();
   const { title, accomplishments, start, end, technologies } = position;
   const isSmallScreen = useMediaQuery(
     `(max-width: ${screenSizes.largeMobile}px)`,
@@ -57,7 +56,7 @@ const Position = ({ position }: { position: PositionType }) => {
           : 'Present'}
       </Smol>
       <Space h="lg" />
-      <List icon={<Point size={16} strokeWidth={3} color={'#862d2e'} />}>
+      <List icon={<IconPoint size={16} strokeWidth={3} color={'#862d2e'} />}>
         {accomplishments?.map((detail, index) => (
           <List.Item key={index}>{detail}</List.Item>
         ))}
@@ -65,7 +64,7 @@ const Position = ({ position }: { position: PositionType }) => {
       <Space h="lg" />
       {!isSmallScreen && (
         <Chip.Group>
-          <Group position="center">
+          <Group justify="center">
             {technologies?.map((tech, index) => (
               <Chip
                 className={classes.chip}

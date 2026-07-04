@@ -1,14 +1,9 @@
-import styled from '@emotion/styled';
 import { Paper as MPaper, Space } from '@mantine/core';
 import { compareDesc, parse } from 'date-fns';
 import { P } from '../Text';
 import { Position } from './Position';
-import { useStyles } from './Resume.styles';
+import classes from './Resume.module.css';
 import type { Position as PositionType } from '../../types';
-
-const CenteredP = styled(P)`
-  text-align: center;
-`;
 
 interface Props {
   link: string;
@@ -17,9 +12,7 @@ interface Props {
   positions?: PositionType[];
 }
 
-const Paper = ({ link, title, description, positions }: Props) => {
-  const { classes } = useStyles();
-  return (
+const Paper = ({ link, title, description, positions }: Props) => (
     <MPaper
       shadow="xl"
       radius="md"
@@ -33,7 +26,7 @@ const Paper = ({ link, title, description, positions }: Props) => {
         </a>
       </div>
 
-      <CenteredP>{description}</CenteredP>
+      <P className={classes.centered}>{description}</P>
       <Space h="lg" />
       {positions
         ?.sort((one, two) =>
@@ -49,6 +42,5 @@ const Paper = ({ link, title, description, positions }: Props) => {
         ))}
     </MPaper>
   );
-};
 
 export { Paper };

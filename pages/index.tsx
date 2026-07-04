@@ -2,7 +2,7 @@ import dynamic from 'next/dynamic';
 import { Education } from '../components/Education/Education';
 import { Header } from '../components/Header/Header';
 import { WorkExperience } from '../components/WorkExperience/WorkExperience';
-import { useStyles } from '../styles/index.styles';
+import classes from '../styles/index.module.css';
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { parse } from 'yaml';
 import type { Resume } from '../types';
@@ -15,9 +15,7 @@ const Resume = ({
   description,
   employers,
   education,
-}: Resume) => {
-  const { classes } = useStyles();
-  return (
+}: Resume) => (
     <>
       <Header
         withDescription
@@ -35,7 +33,6 @@ const Resume = ({
       </section>
     </>
   );
-};
 
 export async function getStaticProps() {
   const s3 = new S3Client({
