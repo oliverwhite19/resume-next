@@ -5,8 +5,8 @@ const H1 = ({
   children,
   ...props
 }: { children: React.ReactNode } & TextProps) => (
-    <Text className={classes.h1} {...props}>
-      <h1>{children}</h1>
-    </Text>
-  );
+  <Text component="h1" className={classes.h1} {...props}>
+    {children}
+  </Text>
+);
 export { H1 };

@@ -12,7 +12,7 @@ Current pain points:
 ## Goals / Non-Goals
 
 **Goals:**
-- Upgrade to a modern, supported stack (Next.js 15, React 19, Mantine 7).
+- Upgrade to a modern, supported stack (Next.js 16, React 19, Mantine 9).
 - Remove dead auth/admin code and dependencies.
 - Make local development possible without AWS credentials.
 - Fail fast with clear errors when required env vars are missing in production builds.
@@ -27,10 +27,10 @@ Current pain points:
 ## Decisions
 
 ### 1. Keep the `pages/` router for this change
-Moving to the `app/` router is a larger migration and is out of scope. Next.js 15 still supports `pages/` well, and this keeps the change focused.
+Moving to the `app/` router is a larger migration and is out of scope. Next.js 16 still supports `pages/` well, and this keeps the change focused.
 
-### 2. Use Mantine v7 with CSS modules
-Mantine v7 drops `createStyles` in favor of CSS modules. We will co-locate `.module.css` files next to components or use Mantine's built-in style props. This removes the Emotion runtime dependency.
+### 2. Use Mantine v9 with CSS modules
+Mantine v9 drops `createStyles` in favor of CSS modules. We will co-locate `.module.css` files next to components or use Mantine's built-in style props. This removes the Emotion runtime dependency.
 
 ### 3. Remove Auth0 and admin code completely
 The admin-management feature lives in remote branches and is not active in `main`. The `UserContext`, `UserProvider`, `WithAdminAuthRequired`, and `centreware/authentication.ts` files, plus `@auth0/nextjs-auth0`, will be removed. The `TopBar` will be simplified or removed.
@@ -46,14 +46,14 @@ Instead of scattered `as string` casts, a `lib/env.ts` helper will assert requir
 
 ## Risks / Trade-offs
 
-- **[Risk] Mantine v7 visual regressions** → Mitigation: compare every component visually after migration; use a side-by-side local build.
-- **[Risk] Next.js 15 breaking changes around dynamic APIs** → Mitigation: we do not use `cookies()`, `headers()`, or dynamic route params in `pages/`, so impact is minimal.
+- **[Risk] Mantine v9 visual regressions** → Mitigation: compare every component visually after migration; use a side-by-side local build.
+- **[Risk] Next.js 16 breaking changes around dynamic APIs** → Mitigation: we do not use `cookies()`, `headers()`, or dynamic route params in `pages/`, so impact is minimal.
 - **[Risk] S3 fallback masks production misconfiguration** → Mitigation: fail the build in production when S3 env vars are missing; fallback only in development.
 - **[Risk] TypeScript/eslint incompatibilities after upgrades** → Mitigation: update related devDependencies together and run `tsc --noEmit` + `next lint` after each major bump.
 
 ## Migration Plan
 
-1. Pin target versions in `package.json` (Next.js 15, React 19, Mantine 7, latest TypeScript/ESLint/Prettier).
+1. Pin target versions in `package.json` (Next.js 16, React 19, Mantine 9, latest TypeScript/ESLint/Prettier).
 2. Install dependencies and resolve peer conflicts.
 3. Remove Auth0/admin code and update `_app.tsx`.
 4. Rewrite Mantine styles from `createStyles` to CSS modules.
@@ -63,5 +63,5 @@ Instead of scattered `as string` casts, a `lib/env.ts` helper will assert requir
 
 ## Open Questions
 
-- Should we keep `next-superjson-plugin`? It may not be needed since data is plain YAML/JSON. We will decide during implementation.
+- ~~Should we keep `next-superjson-plugin`?~~ Removed during implementation; plain YAML/JSON data does not need it.
 - Should we replace `date-fns` with native `Intl.DateTimeFormat` to reduce dependencies? Optional cleanup after core upgrade.
