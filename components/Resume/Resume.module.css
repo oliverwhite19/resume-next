@@ -1,0 +1,35 @@
+.headerWrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+}
+
+.headerWrapper h2 {
+  color: var(--mantine-color-red-8);
+}
+
+.headerWrapper a {
+  text-decoration: none;
+}
+
+.position {
+  padding-left: 1rem;
+  border-left: solid 3px var(--mantine-color-red-8);
+}
+
+.badge {
+  text-transform: none;
+}
+
+.paperStyles {
+  margin-top: 1rem;
+}
+
+.paperStyles:not(:last-child) {
+  margin-bottom: 1rem;
+}
+
+.centered {
+  text-align: center;
+}

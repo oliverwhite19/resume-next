@@ -1,0 +1,13 @@
+.h1 {
+  font-size: var(--mantine-h1-font-size);
+  font-family: Oxygen, sans-serif;
+}
+
+.p {
+  font-family: Cairo, sans-serif;
+}
+
+.smol {
+  font-size: var(--mantine-font-size-xs);
+  font-family: Amiko, sans-serif;
+}

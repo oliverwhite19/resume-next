@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { screenSizes } from '../../styles/theme';
 import { H1, P } from '../Text';
 import { ContactModal } from './ContactModal';
-import { useStyles } from './Header.styles';
+import classes from './Header.module.css';
 
 type Props = (
   | {
@@ -33,8 +33,6 @@ const Header = ({
   linkedin,
   description,
 }: Props) => {
-  const { classes } = useStyles();
-
   const [opened, setOpened] = useState(false);
   const theme = useMantineTheme();
   const isSmallScreen = useMediaQuery(
@@ -70,7 +68,6 @@ const Header = ({
               <Button
                 size={isSmallScreen ? 'md' : 'lg'}
                 color="red"
-                compact={isSmallScreen}
                 variant="outline"
               >
                 Download PDF Resume
@@ -81,7 +78,6 @@ const Header = ({
               onClick={() => setOpened(true)}
               size={isSmallScreen ? 'md' : 'lg'}
               color="red"
-              compact={isSmallScreen}
               variant="outline"
             >
               Contact

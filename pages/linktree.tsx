@@ -1,11 +1,11 @@
 import { Button, Paper, Space } from '@mantine/core';
 import dynamic from 'next/dynamic';
 import {
-  BrandGithub,
-  BrandLinkedin,
-  FilePower,
-  MailFast,
-} from 'tabler-icons-react';
+  IconBrandGithub,
+  IconBrandLinkedin,
+  IconFilePower,
+  IconMailFast,
+} from '@tabler/icons-react';
 import { Header } from '../components/Header/Header';
 
 const Linktree = () => {
@@ -16,7 +16,7 @@ const Linktree = () => {
       <Paper shadow="xl" radius="md" p="md" withBorder>
         <Button.Group orientation="vertical">
           <Button
-            leftIcon={<FilePower />}
+            leftSection={<IconFilePower />}
             color="red"
             variant="outline"
             component="a"
@@ -27,7 +27,7 @@ const Linktree = () => {
             Resume
           </Button>
           <Button
-            leftIcon={<BrandGithub />}
+            leftSection={<IconBrandGithub />}
             color="gray"
             variant="outline"
             component="a"
@@ -38,7 +38,7 @@ const Linktree = () => {
             Github
           </Button>
           <Button
-            leftIcon={<BrandLinkedin />}
+            leftSection={<IconBrandLinkedin />}
             color="grape"
             variant="outline"
             component="a"
@@ -49,7 +49,7 @@ const Linktree = () => {
             LinkedIn
           </Button>
           <Button
-            leftIcon={<MailFast />}
+            leftSection={<IconMailFast />}
             color="orange"
             variant="outline"
             component="a"
