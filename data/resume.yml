@@ -1,0 +1,39 @@
+name: Oliver White
+email: oliverwhite93@gmail.com
+github: https://github.com/oliverwhite19
+linkedin: https://www.linkedin.com/in/oliver-white-453a1221a/
+description: >
+  Full-stack software engineer with experience building modern web applications
+  across React, TypeScript, Node.js, and cloud platforms. Passionate about clean
+  code, accessible UI, and developer experience.
+employers:
+  - name: Example Company
+    url: https://example.com
+    description: A technology company building digital products.
+    positions:
+      - title: Senior Software Engineer
+        start: '2022-01-01'
+        accomplishments:
+          - Led development of customer-facing React applications.
+          - Improved CI/CD pipelines and deployment reliability.
+          - Mentored junior developers and conducted code reviews.
+        technologies:
+          - TypeScript
+          - React
+          - NextJS
+          - Node.js
+      - title: Software Engineer
+        start: '2020-06-01'
+        end: '2021-12-31'
+        accomplishments:
+          - Built REST and GraphQL APIs serving web and mobile clients.
+          - Implemented automated testing across the stack.
+        technologies:
+          - JavaScript
+          - Express
+          - GraphQL
+          - PostgreSQL
+education:
+  - school: Example University
+    url: https://example.edu
+    degree: Bachelor of Science in Computer Science
