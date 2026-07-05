@@ -1,4 +1,5 @@
 import { readFileSync } from 'fs';
+import Head from 'next/head';
 import { resolve } from 'path';
 import { Education } from '../components/Education/Education';
 import { Header } from '../components/Header/Header';
@@ -7,6 +8,7 @@ import classes from '../styles/index.module.css';
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { parse } from 'yaml';
 import { env } from '../lib/env';
+import { siteUrl } from '../lib/site';
 import type { Resume } from '../types';
 
 const Resume = ({
@@ -17,24 +19,53 @@ const Resume = ({
   description,
   employers,
   education,
-}: Resume) => (
-  <>
-    <Header
-      withDescription
-      name={name}
-      email={email}
-      github={github}
-      linkedin={linkedin}
-      description={description}
-    />
-    <section className={classes.section}>
-      <WorkExperience employment={employers} />
-    </section>
-    <section className={classes.section}>
-      <Education education={education} />
-    </section>
-  </>
-);
+}: Resume) => {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name,
+    email,
+    url: siteUrl,
+    sameAs: [github, linkedin],
+    description,
+    image: `${siteUrl}/images/author_.jpg`,
+    worksFor: employers.map((employer) => ({
+      '@type': 'Organization',
+      name: employer.name,
+      url: employer.url,
+    })),
+    alumniOf: education.map((edu) => ({
+      '@type': 'EducationalOrganization',
+      name: edu.school,
+      url: edu.url,
+    })),
+  };
+
+  return (
+    <>
+      <Head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </Head>
+      <Header
+        withDescription
+        name={name}
+        email={email}
+        github={github}
+        linkedin={linkedin}
+        description={description}
+      />
+      <section className={classes.section}>
+        <WorkExperience employment={employers} />
+      </section>
+      <section className={classes.section}>
+        <Education education={education} />
+      </section>
+    </>
+  );
+};
 
 const loadLocalResume = () => {
   const filePath = resolve(process.cwd(), 'data', 'resume.yml');
