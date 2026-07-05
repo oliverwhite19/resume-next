@@ -18,8 +18,28 @@
   border-left: solid 3px var(--mantine-color-red-8);
 }
 
+.position:not(:last-child) {
+  margin-bottom: 1.5rem;
+}
+
 .badge {
   text-transform: none;
+}
+
+.badgeGroup {
+  flex-wrap: wrap;
+}
+
+.accomplishmentList :global(.mantine-List-itemWrapper) {
+  align-items: flex-start;
+}
+
+.accomplishmentList :global(.mantine-List-item) {
+  margin-bottom: 0.75rem;
+}
+
+.accomplishmentList :global(.mantine-List-item):last-child {
+  margin-bottom: 0;
 }
 
 .paperStyles {
@@ -30,6 +50,12 @@
   margin-bottom: 1rem;
 }
 
-.centered {
+.companyDescription {
   text-align: center;
+}
+
+@media (max-width: 540px) {
+  .companyDescription {
+    text-align: left;
+  }
 }

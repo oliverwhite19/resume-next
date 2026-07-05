@@ -54,3 +54,34 @@ a {
     padding: 52px 1.3125rem 1rem 1.3125rem;
   }
 }
+
+@media print {
+  body {
+    background: white;
+  }
+
+  #__next {
+    background-color: white;
+  }
+
+  .layout {
+    padding: 0;
+    max-width: none;
+  }
+
+  button,
+  .mantine-Button-root {
+    display: none !important;
+  }
+
+  .mantine-Paper-root {
+    box-shadow: none !important;
+    border: 1px solid #ddd;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  a {
+    text-decoration: underline;
+  }
+}

@@ -26,7 +26,7 @@ const Paper = ({ link, title, description, positions }: Props) => (
       </a>
     </div>
 
-    <P className={classes.centered}>{description}</P>
+    <P className={classes.companyDescription}>{description}</P>
     <Space h="lg" />
     {(positions ?? [])
       .sort((a, b) =>

@@ -1,17 +1,12 @@
 import { Badge, Group, List, Space } from '@mantine/core';
-import { useMediaQuery } from '@mantine/hooks';
 import { format, parse } from 'date-fns';
 import { IconPoint } from '@tabler/icons-react';
-import { screenSizes } from '../../styles/theme';
 import { Smol } from '../Text';
 import classes from './Resume.module.css';
 import type { Position as PositionType } from '../../types';
 
 const Position = ({ position }: { position: PositionType }) => {
   const { title, accomplishments, start, end, technologies } = position;
-  const isSmallScreen = useMediaQuery(
-    `(max-width: ${screenSizes.largeMobile}px)`,
-  );
 
   const colours = (tech: string) => {
     switch (tech) {
@@ -56,26 +51,24 @@ const Position = ({ position }: { position: PositionType }) => {
           : 'Present'}
       </Smol>
       <Space h="lg" />
-      <List icon={<IconPoint size={16} strokeWidth={3} color={'#862d2e'} />}>
+      <List className={classes.accomplishmentList}>
         {accomplishments?.map((detail) => (
           <List.Item key={detail}>{detail}</List.Item>
         ))}
       </List>
       <Space h="lg" />
-      {!isSmallScreen && (
-        <Group justify="center">
-          {technologies?.map((tech) => (
-            <Badge
-              className={classes.badge}
-              color={colours(tech)}
-              variant="outline"
-              key={tech}
-            >
-              {tech}
-            </Badge>
-          ))}
-        </Group>
-      )}
+      <Group justify="center" className={classes.badgeGroup}>
+        {technologies?.map((tech) => (
+          <Badge
+            className={classes.badge}
+            color={colours(tech)}
+            variant="outline"
+            key={tech}
+          >
+            {tech}
+          </Badge>
+        ))}
+      </Group>
     </div>
   );
 };
