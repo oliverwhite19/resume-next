@@ -5,7 +5,9 @@ const WorkExperience = ({ employment }: { employment: Employer[] }) => {
   return (
     <>
       <h2>Professional Experience</h2>
-      {employment?.map((company, index) => <Job key={index} job={company} />)}
+      {employment?.map((company) => (
+        <Job key={company.name} job={company} />
+      ))}
     </>
   );
 };

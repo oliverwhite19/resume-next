@@ -4,9 +4,9 @@ const Education = ({ education }: { education: Education[] }) => {
   return (
     <>
       <h2>Education</h2>
-      {education?.map((edu, index) => (
+      {education?.map((edu) => (
         <Paper
-          key={index}
+          key={edu.school}
           title={edu.school ?? ''}
           description={edu.degree ?? ''}
           link={edu.url ?? ''}

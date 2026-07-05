@@ -72,18 +72,23 @@ const loadLocalResume = () => {
   return parse(readFileSync(filePath, 'utf-8'));
 };
 
-const loadS3Resume = async () => {
+const loadS3Resume = async (
+  accessKeyId: string,
+  secretAccessKey: string,
+  bucket: string,
+  configKey?: string,
+) => {
   const s3 = new S3Client({
     region: env.AWS_REGION,
     credentials: {
-      accessKeyId: env.AWS_ACCESS_KEY_ID as string,
-      secretAccessKey: env.AWS_SECRET_ACCESS_KEY as string,
+      accessKeyId,
+      secretAccessKey,
     },
   });
 
   const command = new GetObjectCommand({
-    Bucket: env.AWS_BUCKET,
-    Key: env.CONFIG_KEY,
+    Bucket: bucket,
+    Key: configKey,
   });
 
   const response = await s3.send(command);
@@ -91,11 +96,16 @@ const loadS3Resume = async () => {
 };
 
 export async function getStaticProps() {
-  const hasS3Config =
-    env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY && env.AWS_BUCKET;
+  const {
+    AWS_ACCESS_KEY_ID,
+    AWS_SECRET_ACCESS_KEY,
+    AWS_BUCKET,
+    CONFIG_KEY,
+    isProduction,
+  } = env;
 
-  if (!hasS3Config) {
-    if (env.isProduction) {
+  if (!AWS_ACCESS_KEY_ID || !AWS_SECRET_ACCESS_KEY || !AWS_BUCKET) {
+    if (isProduction) {
       throw new Error(
         'Missing S3 configuration. AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, and AWS_BUCKET are required in production.',
       );
@@ -108,14 +118,22 @@ export async function getStaticProps() {
 
   try {
     return {
-      props: await loadS3Resume(),
+      props: await loadS3Resume(
+        AWS_ACCESS_KEY_ID,
+        AWS_SECRET_ACCESS_KEY,
+        AWS_BUCKET,
+        CONFIG_KEY,
+      ),
       revalidate: 60,
     };
   } catch (error) {
-    if (env.isProduction) {
+    if (isProduction) {
       throw error;
     }
-    console.warn('Failed to load resume from S3, falling back to local file:', error);
+    console.warn(
+      'Failed to load resume from S3, falling back to local file:',
+      error,
+    );
     return {
       props: loadLocalResume(),
       revalidate: 60,

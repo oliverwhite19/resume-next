@@ -57,19 +57,19 @@ const Position = ({ position }: { position: PositionType }) => {
       </Smol>
       <Space h="lg" />
       <List icon={<IconPoint size={16} strokeWidth={3} color={'#862d2e'} />}>
-        {accomplishments?.map((detail, index) => (
-          <List.Item key={index}>{detail}</List.Item>
+        {accomplishments?.map((detail) => (
+          <List.Item key={detail}>{detail}</List.Item>
         ))}
       </List>
       <Space h="lg" />
       {!isSmallScreen && (
         <Group justify="center">
-          {technologies?.map((tech, index) => (
+          {technologies?.map((tech) => (
             <Badge
               className={classes.badge}
               color={colours(tech)}
               variant="outline"
-              key={index}
+              key={tech}
             >
               {tech}
             </Badge>

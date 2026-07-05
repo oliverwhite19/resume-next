@@ -36,7 +36,10 @@ const Paper = ({ link, title, description, positions }: Props) => (
         ),
       )
       .map((position) => (
-        <Position key={position.title} position={position} />
+        <Position
+          key={`${position.title}-${position.start}`}
+          position={position}
+        />
       ))}
   </MPaper>
 );

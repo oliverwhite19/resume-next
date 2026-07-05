@@ -14,7 +14,6 @@ type Position = {
 type Employer = {
   name: string;
   url: string;
-  position: number;
   description: string;
   positions: Position[];
 };
