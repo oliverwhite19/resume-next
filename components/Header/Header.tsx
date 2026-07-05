@@ -1,10 +1,12 @@
-import { Avatar, Button, Modal, Paper, useMantineTheme } from '@mantine/core';
+import { Button, Modal, Paper, useMantineTheme } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
+import Image from 'next/image';
 import { useState } from 'react';
 import { screenSizes } from '../../styles/theme';
 import { H1, P } from '../Text';
 import { ContactModal } from './ContactModal';
 import classes from './Header.module.css';
+import authorImage from '../../public/images/author_.jpg';
 
 type Props = (
   | {
@@ -88,13 +90,16 @@ const Header = ({
       {withDescription && (
         <>
           <div className={classes.avatarContainer}>
-            <Avatar
-              radius="xl"
-              size="10rem"
-              color="red"
-              src="images/author_.jpg"
-              alt="A picture of me!"
-            />
+            <div className={classes.avatarImageWrapper}>
+              <Image
+                src={authorImage}
+                alt="Portrait of Oliver White"
+                width={160}
+                height={160}
+                priority
+                className={classes.avatarImage}
+              />
+            </div>
             <P>{description}</P>
           </div>
         </>

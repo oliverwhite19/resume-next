@@ -83,3 +83,17 @@
 .contactButtonIcon {
   margin-right: 0.5rem;
 }
+
+.avatarImageWrapper {
+  flex-shrink: 0;
+  width: 10rem;
+  height: 10rem;
+  border-radius: var(--mantine-radius-xl);
+  overflow: hidden;
+}
+
+.avatarImage {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
