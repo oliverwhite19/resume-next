@@ -1,4 +1,3 @@
-import dynamic from 'next/dynamic';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 import { Education } from '../components/Education/Education';
@@ -93,6 +92,4 @@ export async function getStaticProps() {
   }
 }
 
-export default dynamic(() => Promise.resolve(Resume), {
-  ssr: false,
-});
+export default Resume;

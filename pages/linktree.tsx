@@ -1,5 +1,4 @@
 import { Button, Paper, Space } from '@mantine/core';
-import dynamic from 'next/dynamic';
 import {
   IconBrandGithub,
   IconBrandLinkedin,
@@ -65,6 +64,4 @@ const Linktree = () => {
   );
 };
 
-export default dynamic(() => Promise.resolve(Linktree), {
-  ssr: false,
-});
+export default Linktree;
