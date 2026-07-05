@@ -57,12 +57,12 @@
 .contactModalButtonAction {
   font-size: 0.875rem;
   font-weight: bold;
-  color: black;
+  color: var(--mantine-color-text);
 }
 
 .contactModalButtonAccount {
   font-size: 0.6rem;
-  color: darkgray;
+  color: var(--mantine-color-dimmed);
 }
 
 .contactButtonGroup {

@@ -1,4 +1,9 @@
-import { Button, Modal, Paper, useMantineTheme } from '@mantine/core';
+import {
+  Button,
+  Modal,
+  Paper,
+  useMantineTheme,
+} from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -53,8 +58,8 @@ const Header = ({
         <H1
           variant="gradient"
           gradient={{
-            from: 'black',
-            to: 'red',
+            from: 'red.8',
+            to: 'red.4',
             deg: 45,
           }}
         >

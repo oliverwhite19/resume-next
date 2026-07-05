@@ -4,6 +4,7 @@ import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { siteUrl } from '../lib/site';
+import { ThemeToggle } from '../components/ThemeToggle';
 import { theme } from '../styles/theme';
 
 import '../styles/globals.css';
@@ -20,7 +21,7 @@ const Root = ({ Component, pageProps }: AppProps) => {
   const canonicalUrl = `${siteUrl}${canonicalPath}`;
 
   return (
-    <MantineProvider theme={theme}>
+    <MantineProvider theme={theme} defaultColorScheme="auto">
       <Head>
         <title key="title">{defaultTitle}</title>
         <meta
@@ -50,6 +51,7 @@ const Root = ({ Component, pageProps }: AppProps) => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <div className="layout">
+        <ThemeToggle />
         <Component {...pageProps} />
       </div>
     </MantineProvider>
