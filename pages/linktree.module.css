@@ -1,0 +1,46 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.avatarWrapper {
+  width: 7rem;
+  height: 7rem;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.avatarImage {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.bio {
+  text-align: center;
+  max-width: 24rem;
+  color: var(--mantine-color-gray-7);
+}
+
+.buttonStack {
+  width: 100%;
+}
+
+.linkButton {
+  width: 100%;
+  justify-content: flex-start;
+  padding-left: 1.5rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.linkButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.linkButtonIcon {
+  margin-right: 0.75rem;
+}
