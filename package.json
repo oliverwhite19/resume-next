@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "pretty": "prettier --write \"./**/*.{js,jsx,mjs,cjs,ts,tsx,json}\""
   },
   "dependencies": {
@@ -28,7 +28,7 @@
     "@types/react-dom": "^19.2.3",
     "@typescript-eslint/eslint-plugin": "^8.62.1",
     "@typescript-eslint/parser": "^8.62.1",
-    "eslint": "^10.6.0",
+    "eslint": "^9.7.0",
     "eslint-config-next": "^16.2.10",
     "eslint-plugin-react": "^7.37.5",
     "prettier": "^3.9.4",

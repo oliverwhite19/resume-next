@@ -5,12 +5,17 @@ import {
   IconFilePower,
   IconMailFast,
 } from '@tabler/icons-react';
+import Head from 'next/head';
 import { Header } from '../components/Header/Header';
 
 const Linktree = () => {
   return (
     <>
-      <Header withDescription={false} name="Olive White" />
+      <Head>
+        <title>Oliver White - Links</title>
+        <meta name="description" content="Links to Oliver White's resume, GitHub, LinkedIn, and email." />
+      </Head>
+      <Header withDescription={false} name="Oliver White" />
       <Space h="lg" />
       <Paper shadow="xl" radius="md" p="md" withBorder>
         <Button.Group orientation="vertical">

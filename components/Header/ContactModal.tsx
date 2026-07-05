@@ -31,8 +31,8 @@ const ContactModal = ({ email, github, linkedin }: Props) => {
         rel="noopener noreferrer"
       >
         <div className={classes.contactModalButtonContents}>
-          <p className={classes.contactModalButtonAction}>Email</p>
-          <p className={classes.contactModalButtonAccount}>{email}</p>
+          <span className={classes.contactModalButtonAction}>Email</span>
+          <span className={classes.contactModalButtonAccount}>{email}</span>
         </div>
       </Button>
       <Button
@@ -50,8 +50,8 @@ const ContactModal = ({ email, github, linkedin }: Props) => {
         rel="noopener noreferrer"
       >
         <div className={classes.contactModalButtonContents}>
-          <p className={classes.contactModalButtonAction}>Github</p>
-          <p className={classes.contactModalButtonAccount}>oliverwhite19</p>
+          <span className={classes.contactModalButtonAction}>Github</span>
+          <span className={classes.contactModalButtonAccount}>oliverwhite19</span>
         </div>
       </Button>
       <Button
@@ -69,10 +69,10 @@ const ContactModal = ({ email, github, linkedin }: Props) => {
         rel="noopener noreferrer"
       >
         <div className={classes.contactModalButtonContents}>
-          <p className={classes.contactModalButtonAction}>LinkedIn</p>
-          <p className={classes.contactModalButtonAccount}>
+          <span className={classes.contactModalButtonAction}>LinkedIn</span>
+          <span className={classes.contactModalButtonAccount}>
             oliver-white-453a1221a
-          </p>
+          </span>
         </div>
       </Button>
     </Button.Group>
